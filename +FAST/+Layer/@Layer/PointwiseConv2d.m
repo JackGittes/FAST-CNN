@@ -11,14 +11,19 @@
         1. stride~=[1,1]
         2. padding method support
 %}
-% 
+
 function res = PointwiseConv2d(obj,im,ker,~,~)
     [im_h,im_w,im_d] = size(im);
     [~,~,k_in,k_out] = size(ker);
+    % I don't check input args here assuming that these necessary checks
+    % have been done before fed into PointwiseConv2d by Conv2d function. If
+    % you want to use PointwiseConv2d independently, add some checks here.
     
+    % Reshape input map and filters to matrix form.
     im_mat = reshape(im,[im_h*im_w,im_d]);
     ker_mat = reshape(ker,[k_in,k_out]);
     
+    % Calculate PointwiseConv2d according to computation mode.
     switch obj.Mode
         case 'GPU'
             res_mat = FAST.kernel.FXPGEMMonGPU(im_mat,ker_mat);
@@ -27,5 +32,6 @@ function res = PointwiseConv2d(obj,im,ker,~,~)
         otherwise
             error('Unknown Computation Mode.');
     end
+    % Reshape result matrix to output feature map's shape. 
     res = reshape(res_mat,[im_h,im_w,k_out]);
 end

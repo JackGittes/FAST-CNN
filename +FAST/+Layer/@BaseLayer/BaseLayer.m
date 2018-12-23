@@ -1,3 +1,8 @@
+% Author: Zhao Mingxin
+% Date: 2018/12/23
+% Description: Parent class for Layer class.
+% More details info, pls refer to FAST DOC
+
 classdef BaseLayer < handle
 	properties(SetAccess = private,Dependent)
 		Mode;

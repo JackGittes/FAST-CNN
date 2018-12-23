@@ -1,16 +1,22 @@
 % Author: Zhao Mingxin
 % Date: 2018/12/22
 % Description: Device class.
+% To control and manage computation device as well as provide current device info. 
+% The function will continue to extend.
+
 classdef Device < handle
     properties(SetAccess=private)
         Mode;
         NumCores;
     end
     methods
+	% Constructor: Default mode is SingleCore.
         function obj = Device()
             obj.Mode = 'SingleCore';
             obj.NumCores = 1;
         end
+	% A pubilc interface to set computation mode.
+	% For now, GPU\SingleCore\MultiCore modes are supported.
         function setMode(obj,mode)
             switch mode
                 case 'GPU'
@@ -24,30 +30,10 @@ classdef Device < handle
             end
         end
     end
+	% Implementation for setting different device mode.
     methods(Access = private)
-        function setGPU(obj)
-            try
-                gpuDevice();
-                obj.Mode = 'GPU';
-            catch
-                obj.Mode = 'SingleCore';
-                warning('Fail to get GPU device.');
-            end
-        end
-        function setMultiCore(obj)
-            try
-                p = parcluster('local');
-                obj.NumCores = p.NumWorkers;
-                obj.Mode = 'MultiCore';
-            catch
-                warning('Fail to turn on MultiCore mode.');
-                obj.NumCores = 1;
-                obj.Mode = 'SingleCore';
-            end
-        end
-        function setSingleCore(obj)
-            obj.Mode = 'SingleCore';
-            obj.NumCores = 1;
-        end
+        setGPU(obj);
+        setMultiCore(obj);    
+        setSingleCore(obj);
     end
 end

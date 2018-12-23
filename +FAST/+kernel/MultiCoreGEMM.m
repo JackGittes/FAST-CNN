@@ -31,7 +31,7 @@ function res = MultiCoreGEMM(obj,mat_a,mat_b)
         case 'MultiCore'
     % Now the TaskScheduler is simple but effective in most conditions. I
     % will update its algorithm in the future.
-            [cal_mode,row_per_wk] = nn.utils.TaskScheduler(n,ah,aw,bw);
+            [cal_mode,row_per_wk] = FAST.utils.TaskScheduler(n,ah,aw,bw);
             switch cal_mode
                 case 'A_ROW'
                     res = RowBlockMM(mat_a,mat_b,row_per_wk,shape);

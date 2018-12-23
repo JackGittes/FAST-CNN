@@ -15,19 +15,22 @@ function res = DepthwiseConv2d(obj,im,ker,t,f,stride,padding_method)
     window_shape = [k_h,k_w];
     channel_size = [im_h,im_w];
     
+    % Do some check and throw error info if input args don't meet these conditions.
     if im_d~=k_in
         error("Map dimension and Kernel dimension don't match.");
     end
     if stride(1)~=stride(2)
         error("Current implementation only supports equal length strides in the row and column dimensions as TF do.");
     end
-
-    [im,out_size,channel_size] = nn.op.PaddingByType(im,t,f,im_d,window_shape,channel_size,stride,padding_method);
+    % Padding input feature map according to its padding type.
+    [im,out_size,channel_size] = FAST.op.PaddingByType(im,t,f,im_d,window_shape,channel_size,stride,padding_method);
+    
+    % Calculating DepthwiseConv2d according to its mode.
     switch obj.Mode
         case 'GPU'
-            res = nn.kernel.DepthwiseConvGPU(obj,im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
+            res = FAST.kernel.DepthwiseConvGPU(obj,im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
         case {'MultiCore','SingleCore'}
-            res = nn.kernel.DepthwiseConvCPU(obj,im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
+            res = FAST.kernel.DepthwiseConvCPU(obj,im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
         otherwise
             error('Unknown Computation Mode.');
     end
