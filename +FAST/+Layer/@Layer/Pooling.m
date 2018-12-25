@@ -10,15 +10,13 @@ function res = Pooling(~,im,t,f,window_shape,pool_type,stride,pad_method)
     if ~isfi(im)
         im = fi(im,t,f);
     end
-    
-    if sum(stride>window_shape)>0
-        error("stride>window_shape is not supported as Tensorflow do.");
-    end
+
+    assert(min(stride<=window_shape),"stride>window_shape is not supported as TensorFlow does.");
     
     switch nargin
-        case 4
+        case 5
             res = PoolingByType(im,t,f,window_shape,[2,2],'SAME',@max);
-        case 7
+        case 8
             try
                 pool_func = func_reg(pool_type);
             catch
@@ -34,9 +32,7 @@ function res = PoolingByType(im,t,f,window_shape,stride,pad_method,pool_func)
     [im_h,im_w,im_d] = size(im);
     channel_size = [im_h,im_w];
     
-    if sum(window_shape>channel_size)
-        error("Can't get window_shape>channel as TF do");
-    end
+    assert(min(window_shape<=channel_size),"Can't get window_shape>channel as TF does");
     
     [im,out_size,channel_size] = FAST.op.PaddingByType(im,t,f,im_d,window_shape,channel_size,stride,pad_method);
     

@@ -2,9 +2,7 @@ function res = SingleImageCrop(img,type)
 	if nargin == 0
 		type = 'Central';
 	end
-    [h,w,~]=size(img);
-    [~,idx] = sort([h,w],'descend');
-    scale = 
+    [h,w,~]=size(img); 
     if h>w
         scale = floor(128*[h/w,1]);
         tiny_im = imresize(img,scale);

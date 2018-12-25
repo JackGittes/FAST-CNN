@@ -16,19 +16,16 @@ function res = DepthwiseConv2d(obj,im,ker,t,f,stride,padding_method)
     channel_size = [im_h,im_w];
     
     % Do some check and throw error info if input args don't meet these conditions.
-    if im_d~=k_in
-        error("Map dimension and Kernel dimension don't match.");
-    end
-    if stride(1)~=stride(2)
-        error("Current implementation only supports equal length strides in the row and column dimensions as TF do.");
-    end
+    assert(im_d==k_in,"Input Feature Map dimension and Filter dimension don't match.");
+    assert(stride(1)==stride(2),"Current implementation only supports equal length strides in the row and column dimensions as TF does.");
+    
     % Padding input feature map according to its padding type.
     [im,out_size,channel_size] = FAST.op.PaddingByType(im,t,f,im_d,window_shape,channel_size,stride,padding_method);
     
     % Calculating DepthwiseConv2d according to its mode.
     switch obj.Mode
         case 'GPU'
-            res = FAST.kernel.DepthwiseConvGPU(obj,im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
+            res = FAST.kernel.DepthwiseConvGPU(im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
         case {'MultiCore','SingleCore'}
             res = FAST.kernel.DepthwiseConvCPU(obj,im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride);
         otherwise

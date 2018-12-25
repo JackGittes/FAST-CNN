@@ -1,14 +1,20 @@
+% Author: Zhao Mingxin
+% Date:   2018/12/11
+% Description: as below
+
 function res = DepthwiseConvGPU(im,ker,t,f,im_d,multiplier,channel_size,out_size,window_shape,stride)
 %   Get element position of input feature map.
-    im_pos = GetElemPos(im_d,channel_size,out_size,window_shape,stride);
-
-%   Reshape kernel and input feature map into im2col cell
-    ker_mat = reshape(permute(ker,[1,2,4,3]),[prod(window_shape),im_d*multiplier]);
-    im_mat = reshape(im(im_pos),prod(window_shape),[]);
+    im_pos = FAST.op.GetElemPos(im_d,channel_size,out_size,window_shape,stride);
     
     blk_size = 16;
     FracLen = t.FractionLength;
 %     WordLen = t.WordLength;
+    ker = int32(ker.data*2^(FracLen));
+    im = int32(im.data*2^(FracLen));
+
+%   Reshape kernel and input feature map into im2col cell
+    ker_mat = reshape(permute(ker,[1,2,4,3]),[prod(window_shape),im_d*multiplier]);
+    im_mat = reshape(im(im_pos),prod(window_shape),[]);
     
     CUDA_len = max([32,f.ProductWordLength]);
     up_bound = 2^(CUDA_len-1)-1;
@@ -16,8 +22,6 @@ function res = DepthwiseConvGPU(im,ker,t,f,im_d,multiplier,channel_size,out_size
     
     im_in = reshape(im_mat,prod(window_shape),prod(out_size),im_d);
     ker_in = permute(reshape(ker_mat,prod(window_shape),multiplier,im_d),[2,1,3]);
-    im_in = int32(im_in.data*2^(FracLen));
-    ker_in = int32(ker_in.data*2^(FracLen));
     
     ker_hn = ceil(multiplier/blk_size);
     ker_wn = ceil(prod(window_shape)/blk_size);
@@ -30,7 +34,7 @@ function res = DepthwiseConvGPU(im,ker,t,f,im_d,multiplier,channel_size,out_size
     ker_pad(1:multiplier,1:prod(window_shape),:)=ker_in;
     im_pad(1:prod(window_shape),1:prod(out_size),:)=im_in;
     
-    gpu_kernel=parallel.gpu.CUDAKernel('+FAST\+cuda\DepthwiseGEMM\DepthwiseGEMM.ptx','+FAST\+cuda\DepthwiseGEMM\DepthwiseGEMM.cu');
+    gpu_kernel=parallel.gpu.CUDAKernel('+FAST/+cuda/DepthwiseGEMM/DepthwiseGEMM.ptx','+FAST/+cuda/DepthwiseGEMM/DepthwiseGEMM.cu');
     gpu_kernel.GridSize=[ker_hn,im_wn,im_d];
     gpu_kernel.ThreadBlockSize=[blk_size,blk_size,1];
     

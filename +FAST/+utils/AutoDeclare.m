@@ -18,8 +18,12 @@ function AutoDeclare(classname,path,parent,dest)
 	fprintf(fileID,gen_info);
 	fprintf(fileID,author_info);
 	fprintf(fileID,class_title);
-	props = getClassMethods(path,classname);
-
+    try
+        props = getClassMethods(path,classname);
+    catch
+        fclose(fileID);
+        error('Get Properties Error');
+    end
 	writeMethods(fileID,props);
 	fprintf(fileID,'end\n');
 	fclose(fileID);
@@ -51,34 +55,12 @@ end
 function res = getClassMethods(path,classname)
     names = dir(path);
     res = struct;
-    function argfunc = getArgFunc(path, filename)
-        func = [path,filename];
-        arginn = nargin(func);
-        argoutn = nargout(func);
-        arginlist = 'obj';
-        argoutlist = '';
-        for j = 1:arginn-1
-           arginlist = strcat(arginlist,',Arg',num2str(j));
-        end
-        arginlist = ['(',arginlist,')'];
-        for j = 1:argoutn
-           argoutlist = strcat(argoutlist,',Out',num2str(j));
-        end
-        if argoutn>0
-            argoutlist = ['[',argoutlist(2:end),']'];
-        end
-        argfunc = [argoutlist,'=',filename(1:end-2),arginlist];
-    end
-    function res = checkName(filename,classname)
-        res = strcmp(filename(end-1:end),'.m') && ...
-            ~strcmp(filename(1:end-2),classname);
-    end
     k=1;
     for i = 3:length(names)
        filename = names(i).name;
        if checkName(filename,classname)
-          res(k).name = getArgFunc(path,filename);
-          k=k+1;
+            res(k).name = getArgFunc(path,filename);
+            k=k+1;
        end
     end
 end
@@ -89,4 +71,27 @@ function writeMethods(fileID,props)
         fprintf(fileID,['\t\t',props(i).name,';\n']);
     end
     fprintf(fileID,'\t end\n');
+end
+
+function argfunc = getArgFunc(path, filename)
+    func = [path,filename];
+    arginn = nargin(func);
+    argoutn = nargout(func);
+    arginlist = 'obj';
+    argoutlist = '';
+    for j = 1:arginn-1
+       arginlist = strcat(arginlist,',Arg',num2str(j));
+    end
+    arginlist = ['(',arginlist,')'];
+    for j = 1:argoutn
+       argoutlist = strcat(argoutlist,',Out',num2str(j));
+    end
+    if argoutn>0
+        argoutlist = ['[',argoutlist(2:end),']'];
+    end
+    argfunc = [argoutlist,'=',filename(1:end-2),arginlist];
+end
+function res = checkName(filename,classname)
+    res = strcmp(filename(end-1:end),'.m') && ...
+        ~strcmp(filename(1:end-2),classname);
 end

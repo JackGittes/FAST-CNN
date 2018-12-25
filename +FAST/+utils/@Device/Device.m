@@ -33,7 +33,7 @@ classdef Device < handle
 	% Implementation for setting different device mode.
     methods(Access = private)
         setGPU(obj);
-        setMultiCore(obj);    
+        setMultiCore(obj);
         setSingleCore(obj);
     end
 end

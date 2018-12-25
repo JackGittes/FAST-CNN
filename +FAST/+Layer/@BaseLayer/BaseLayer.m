@@ -20,5 +20,9 @@ classdef BaseLayer < handle
         function Mode = get.Mode(obj)
             Mode = obj.Device.Mode;
         end
+        
+        function delete(~)
+            disp('Layer deleted.');
+        end
 	end
 end

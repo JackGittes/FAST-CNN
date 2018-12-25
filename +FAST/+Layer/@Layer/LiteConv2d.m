@@ -2,8 +2,8 @@
 % Date: 2018/12/22
 % Description: run tflite Conv2d.
 
-function res = LiteConv2d(im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,padding,bias)
-    wordlen = 32;
+function res = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,padding,bias,shift_n,bias_s)
+    wordlen = 16;
     fraclen = 0;
     
     fcal = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'nearest', ... 
@@ -11,28 +11,49 @@ function res = LiteConv2d(im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,paddi
     'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
     tcal = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
     
-    im_int = fi(im,tcal,fcal)-fi(z_im,tcal,fcal);
-    ker_int = fi(ker,tcal,fcal)-fi(z_ker,tcal,fcal);
+    im_int = fi(im,tcal,fcal);
+    
+    % This step can be done offline.
+    ker_int = fi(ker,tcal,fcal);
+    z_ker = fi(z_ker,tcal,fcal);
+    
+    ker_int = FAST.kernel.FastFiAddSub(ker_int,z_ker,@minus);
+    
+    ker_int(ker_int>127)=127;
+    ker_int(ker_int<-128)=-128;
     
     % Calculate by type
     switch ConvType
         case 'Conv2d'
-            conv_res = nn.Conv2d(im_int,ker_int,tcal,fcal,stride,padding);
+            conv_res = obj.Conv2d(im_int,ker_int,tcal,fcal,stride,padding);
         case 'DepthwiseConv2d'
-            conv_res = nn.DepthwiseConv2d(im_int,ker_int,tcal,fcal,stride,padding);
+            conv_res = obj.DepthwiseConv2d(im_int,ker_int,tcal,fcal,stride,padding);
         otherwise
             error('Unknown ConvType Detected.');
     end
-    conv_res = nn.AddBias(conv_res,fi(bias,tcal,fcal),tcal,fcal);
+    
+    conv_res = obj.AddBias(conv_res,bitshift(fi(bias,tcal,fcal),-bias_s),tcal,fcal);
+
+    conv_res = fi(conv_res,1,16,0);
+    
+    wordlen = 32;
+    fraclen = 0;
+    
+    fcal = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
+    'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...
+    'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
+    tcal = numerictype('WordLength', wordlen, 'FractionLength',fraclen); 
+    conv_res = fi(conv_res,tcal,fcal);
     
     % OutputStage
-    [mul,n] = getShiftBits(s1,s2,s3,14);
+    [mul,n] = getShiftBits(s1,s2,s3,13);
     
-    fprintf('mul and shift are: %d, %d\n',mul,n);
-    tmp = int32(conv_res.data)*int32(mul);
-    res = bitshift(fi(tmp,tcal,fcal),-n)+ fi(z_res,tcal,fcal);
+    fprintf('mul: %5d shift: %3d  z_im: %3d z_ker: %3d z_res: %3d shift_n: %2d\n',mul,n,z_im,z_ker,z_res,shift_n);
     
-    res = fi(res,0,8,0);
+    res_tmp = FAST.kernel.FastFiMultiply(conv_res,fi(mul,tcal,fcal));
+    res = bitshift(res_tmp,-(n-bias_s+shift_n));
+    res(res<0)=0;
+    res = fi(res,1,8,0);
 end
 
 function [mul,n] = getShiftBits(s1,s2,s3,base)

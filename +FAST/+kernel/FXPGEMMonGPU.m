@@ -11,46 +11,31 @@
 % So there's still a large margin to improve its performance.
 
 function res = FXPGEMMonGPU(mat_a,mat_b)
-    if ~isfi(mat_a) || ~isfi(mat_b)
-        error('GPU Fixed point GEMM only support fi object for now.');
-    end
+    assert(isfi(mat_a)&&isfi(mat_b),"GPU Fixed point GEMM only support fi object for now.");
+    
     [ah,aw]=size(mat_a);
     [bh,bw]=size(mat_b);
-    if aw~=bh
-        error('Inner Dimension Must Match.');
-    end
-    
-    % Get quantization info. 
-    t = mat_a.numerictype;
-    f = mat_a.fimath;
-    FracLen = t.FractionLength;
-%   WordLen = t.WordLength;
+
+    assert(aw==bh,"Inner Dimension Must Match.");
     
     % Set OverFlow bounds and apply pre-set overflow action on GPU
-    CUDA_len = max([32,f.ProductWordLength]);
-    up_bound = 2^(CUDA_len-1)-1;
-    low_bound = -2^(CUDA_len-1);
+    [a_int,b_int,~,FracLen,up_bound,low_bound] = FAST.kernel.FiToInt(mat_a,mat_b,'int32');
   
     % More details please refer to CUDA Programming GUIDE.
     % Recommended CUDA block size is 16*16 or no more than 512.
     blk_size = 16;
-    ah_n = ceil(ah/blk_size);
-    aw_n = ceil(aw/blk_size);
-    bh_n = ceil(bh/blk_size);
-    bw_n = ceil(bw/blk_size);
+    block_ = num2cell(ceil([ah,aw,bh,bw]/blk_size));
+    [ah_n,aw_n,bh_n,bw_n] = block_{:};
     
     % Dequantization stage as described in DOC.
     a_pad = int32(zeros(ah_n*blk_size,aw_n*blk_size));
     b_pad = int32(zeros(bh_n*blk_size,bw_n*blk_size));
     
-    a_int = mat_a.data*(2^mat_a.FractionLength);
-    b_int = mat_b.data*(2^mat_b.FractionLength);
-    
     a_pad(1:ah,1:aw)=int32(a_int);
     b_pad(1:bh,1:bw)=int32(b_int);
     
     % Send matrix to GPU and apply GPU GEMM in int32.
-    gpu_kernel = parallel.gpu.CUDAKernel('+FAST\+cuda\matmul\matmul.ptx','+FAST\+cuda\matmul\matmul.cu');
+    gpu_kernel = parallel.gpu.CUDAKernel('+FAST/+cuda/matmul/matmul.ptx','+FAST/+cuda/matmul/matmul.cu');
     gpu_kernel.GridSize=[bw_n,ah_n,1];
     gpu_kernel.ThreadBlockSize=[blk_size,blk_size,1];
     
@@ -60,5 +45,5 @@ function res = FXPGEMMonGPU(mat_a,mat_b)
     res = gather(res_gpu);
     
     % Re-quantization stage as described in DOC.
-    res = fi(res(1:ah,1:bw)/2^(2*FracLen),t,f);
+    res = fi(res(1:ah,1:bw)/2^(2*FracLen),mat_a.numerictype,mat_a.fimath);
 end

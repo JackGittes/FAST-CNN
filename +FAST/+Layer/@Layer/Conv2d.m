@@ -9,15 +9,13 @@ function res = Conv2d(obj,im,ker,t,f,stride,padding)
     window_shape = [k_h,k_w];
     channel_size = [im_h,im_w];
     
-    if im_d~=k_in
-        error("Map dimension and Kernel dimension don't match.");
-    end
+    assert(im_d==k_in,"Input Feature Map dimension and Filter dimension don't match.");
 
     if k_h>1 || k_w>1
         [im,out_size,channel_size]=FAST.op.PaddingByType(im,t,f,im_d,window_shape,channel_size,stride,padding);
         res = Conv2dTensor(obj,im,ker,im_d,k_out,channel_size,out_size,window_shape,stride); 
     else
-%   If kernel size is 1*1, use PointwiseConv2d to accelerate calculation.
+    %   If kernel size is 1*1, use PointwiseConv2d to accelerate calculation.
         res = PointwiseConv2d(obj,im,ker,t,f);
     end
 end
