@@ -46,9 +46,9 @@ function res = MultiCoreGEMM(obj,mat_a,mat_b)
             end
         case 'SingleCore'
             res = mat_a*mat_b;
-            warning_info =['Multi-Core Mode GEMM is OFF, maybe something wrong with PCT config. ' ...
-                  'GEMM core will continue to run on Single-Core Mode without acceleration benefit.'];
-            warning(warning_info);
+%             warning_info =['Multi-Core Mode GEMM is OFF, maybe something wrong with PCT config. ' ...
+%                   'GEMM core will continue to run on Single-Core Mode without acceleration benefit.'];
+%             warning(warning_info);
     end
 end
 

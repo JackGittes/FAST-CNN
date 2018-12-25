@@ -7,10 +7,8 @@ function res = Pooling(~,im,t,f,window_shape,pool_type,stride,pad_method)
     poolregfunc = {'max','mean'};
     func_reg = containers.Map(poolreg,poolregfunc);
     
-    if ~isfi(im)
-        im = fi(im,t,f);
-    end
-
+    % Do necessary check for input args.
+    assert(isfi(im),"Input Feature Map is NOT a fi object.");
     assert(min(stride<=window_shape),"stride>window_shape is not supported as TensorFlow does.");
     
     switch nargin

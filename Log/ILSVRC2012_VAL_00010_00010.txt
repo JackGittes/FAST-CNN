@@ -1,1 +1,0 @@
-Image ID:    10, Top1:  0, Top5:  1, Total: 0, Top1 Total:     1, Top5 Total:     1

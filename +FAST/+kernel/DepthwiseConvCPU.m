@@ -27,9 +27,10 @@ end
 
 function res_cell = DepthwiseGEMM(obj,ker_mat,im_mat,im_d,multiplier,out_size,window_shape)
     num_core = obj.Device.NumCores;
+    mode = obj.Mode;
     [cal_mode,~] = FAST.utils.TaskScheduler(num_core,multiplier,prod(window_shape),prod(out_size));
 
-    if num_core>0 && strcmp(cal_mode,'SingleCore')
+    if strcmp(mode,'MultiCore') && strcmp(cal_mode,'MultiCore')
         res_cell = cell(1,im_d);
         im_mat_sp = size(im_mat);
         im_blk_len = im_mat_sp(2)/im_d;
@@ -41,7 +42,7 @@ function res_cell = DepthwiseGEMM(obj,ker_mat,im_mat,im_d,multiplier,out_size,wi
     else
         ker_cell = mat2cell(ker_mat,ones(1,im_d)*multiplier,prod(window_shape))';
         im_cell = mat2cell(im_mat,prod(window_shape),prod(out_size)*ones(1,im_d));
-        if num_core>0 && ~strcmp(cal_mode,'SingleCore')
+        if num_core>0 && ~strcmp(mode,'SingleCore')
             res_cell = cell(1,im_d);
             for i=1:im_d
                 res_cell{i} = FAST.kernel.MultiCoreGEMM(obj,ker_cell{i},im_cell{i});

@@ -1,6 +1,6 @@
-% Auto Generated in 2018-12-25 11:52:47 By MATLAB 2018a
+% Auto Generated in 2018-12-25 14:07:49 By MATLAB 2017a
 % Author: Zhao Mingxin
-classdef Layer < FAST.layer.BaseLayer
+classdef Layer < FAST.Layer.BaseLayer
 	 methods
 		[Out1]=AddBias(obj,Arg1,Arg2,Arg3,Arg4);
 		[Out1]=Conv2d(obj,Arg1,Arg2,Arg3,Arg4,Arg5,Arg6);

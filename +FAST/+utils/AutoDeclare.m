@@ -22,7 +22,7 @@ function AutoDeclare(classname,path,parent,dest)
         props = getClassMethods(path,classname);
     catch
         fclose(fileID);
-        error('Get Properties Error');
+        error('Get Properties Error.');
     end
 	writeMethods(fileID,props);
 	fprintf(fileID,'end\n');

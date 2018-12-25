@@ -1,0 +1,10 @@
+Image ID:    11, Top1:  1, Top5:  1, Total: 1, Top1 Total:     1, Top5 Total:     1
+Image ID:    12, Top1:  1, Top5:  1, Total: 2, Top1 Total:     2, Top5 Total:     2
+Image ID:    13, Top1:  1, Top5:  1, Total: 3, Top1 Total:     3, Top5 Total:     3
+Image ID:    14, Top1:  1, Top5:  1, Total: 4, Top1 Total:     4, Top5 Total:     4
+Image ID:    15, Top1:  1, Top5:  1, Total: 5, Top1 Total:     5, Top5 Total:     5
+Image ID:    16, Top1:  1, Top5:  1, Total: 6, Top1 Total:     6, Top5 Total:     6
+Image ID:    17, Top1:  0, Top5:  0, Total: 6, Top1 Total:     6, Top5 Total:     7
+Image ID:    18, Top1:  0, Top5:  0, Total: 6, Top1 Total:     6, Top5 Total:     8
+Image ID:    19, Top1:  1, Top5:  1, Total: 7, Top1 Total:     7, Top5 Total:     9
+Image ID:    20, Top1:  1, Top5:  1, Total: 8, Top1 Total:     8, Top5 Total:    10
