@@ -1,4 +1,4 @@
-Cores = 36;
+Cores = 4;
 import FAST.*
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
@@ -46,6 +46,8 @@ lbfile = load('./Test/validation_lbs.mat');
 
 tic
 t1 = toc;
+LogName = 'Log/ILSVRC2012_TOTAL_Log.txt';
+TotLogID = fopen(LogName,'w');
 spmd
     nameNum = [num2str(subStart{labindex},'%05d'),'_',num2str(subEnd{labindex},'%05d')];
     filename = strcat('Log/ILSVRC2012_VAL_',nameNum,'.txt');

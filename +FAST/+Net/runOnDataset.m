@@ -1,46 +1,25 @@
-function [totNum,pred_top_1,pred_top_5] = runOnDataset(imStart,imEnd,net,lbs,impath,Loader,LogID)
+function [totNum,sp1,sp5] = runOnDataset(imStart,imEnd,net,lbs,impath,Loader,LogID)
     val = lbs.val_lbs;
-    
-    totNum = 0;
-    pred_top_1 = 0;
-    pred_top_5 = 0;
+    [totNum,sp1,sp5] = deal(0,0,0);
     
     for idx = imStart:imEnd
         imlb = val.Label(idx);
-        
         try
             img = Loader(impath,idx,lbs);
-        catch err
+            totNum = totNum + 1;
+        catch
             fprintf('Image Read Failure in :%d\n',idx);
-            disp(err);
             continue;
         end
-        
-        totNum = totNum + 1;
-        
 %         img = FAST.img.SingleImageCrop(img,224);
 %         img = FAST.img.PadLeftRight(img);
         img = FAST.img.CropToShape(img,[224,256]);
-        net.getInputs(img);
-        pred = net.Forward();
         
-        top5 = FAST.op.getTopKPred(pred,5);
-        [~,top1] = max(pred);
-        if top1 == imlb+2
-            pred_top_1 = pred_top_1 + 1;
-            pred_top_5 = pred_top_5 + 1;
-            pred1 = 1;
-            pred5 = 1;
-        elseif ismember(imlb+2,top5)
-            pred_top_5 = pred_top_5 +1;
-            pred1 = 0;
-            pred5 = 1;
-        else
-            pred1 = 0;
-            pred5 = 0;
-        end
+        [p1,p5] = FAST.Net.runNetOnce(net,img,imlb+2);
         
-        fprintf(LogID,'Image ID: %5d, Top1: %2d, Top5: %2d, Total: %d, Top1 Total: %5d, Top5 Total: %5d\n',idx,pred1,pred5,pred_top_1,pred_top_5,totNum);
+        [sp1,sp5] = deal(sp1+p1,sp5+p5);
+        
+        fprintf(LogID,'Image ID: %5d, Top1: %2d, Top5: %2d, Top1 Total: %5d, Top5 Total: %5d\n, Total: %5d',idx,p1,p5,sp1,sp5,totNum);
     end
     fclose(LogID);
 end
