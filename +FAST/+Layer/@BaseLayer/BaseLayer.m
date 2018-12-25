@@ -22,7 +22,7 @@ classdef BaseLayer < handle
         end
         
         function delete(~)
-            disp('Layer deleted.');
+            disp('Clear Residual Data.');
         end
 	end
 end

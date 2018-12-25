@@ -29,6 +29,8 @@ classdef Device < handle
                     warning('Unknown Mode.');
             end
         end
+        
+        getDeviceInfo(obj);
     end
 	% Implementation for setting different device mode.
     methods(Access = private)

@@ -21,17 +21,14 @@
 function res = MultiCoreGEMM(obj,mat_a,mat_b)
     [ah,aw] = size(mat_a);
     [bh,bw] = size(mat_b);
-    if aw~=bh
-        error("Matrix Inner Dimension For Multiplication Must Match.");
-    end
+    assert(aw==bh,"Matrix Inner Dimension For Multiplication Must Match.");
+    
     shape = [ah,aw,bw];
-    n = obj.Device.NumCores;
-    mode = obj.Mode;
-    switch mode
+    switch obj.Mode
         case 'MultiCore'
     % Now the TaskScheduler is simple but effective in most conditions. I
     % will update its algorithm in the future.
-            [cal_mode,row_per_wk] = FAST.utils.TaskScheduler(n,ah,aw,bw);
+            [cal_mode,row_per_wk] = FAST.utils.TaskScheduler(obj.Device.NumCores,ah,aw,bw);
             switch cal_mode
                 case 'A_ROW'
                     res = RowBlockMM(mat_a,mat_b,row_per_wk,shape);
@@ -46,9 +43,6 @@ function res = MultiCoreGEMM(obj,mat_a,mat_b)
             end
         case 'SingleCore'
             res = mat_a*mat_b;
-%             warning_info =['Multi-Core Mode GEMM is OFF, maybe something wrong with PCT config. ' ...
-%                   'GEMM core will continue to run on Single-Core Mode without acceleration benefit.'];
-%             warning(warning_info);
     end
 end
 
