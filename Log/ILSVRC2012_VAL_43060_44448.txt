@@ -1,0 +1,5 @@
+Image ID: 43060, Top1:  1, Top5:  1, Total: 1, Top1 Total:     1, Top5 Total:     1
+Image ID: 43061, Top1:  0, Top5:  0, Total: 1, Top1 Total:     1, Top5 Total:     2
+Image ID: 43062, Top1:  1, Top5:  1, Total: 2, Top1 Total:     2, Top5 Total:     3
+Image ID: 43063, Top1:  0, Top5:  1, Total: 2, Top1 Total:     3, Top5 Total:     4
+Image ID: 43064, Top1:  0, Top5:  1, Total: 2, Top1 Total:     4, Top5 Total:     5

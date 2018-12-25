@@ -1,4 +1,4 @@
-Cores = 4;
+Cores = 36;
 import FAST.*
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
@@ -10,7 +10,7 @@ else
 end
 
 nStart = 1;
-nEnd = 40;
+nEnd = 50000;
 
 SplitFunc = @(Len,Cores) floor(Len/Cores)*ones(1,Cores)+[ones(1,mod(Len,Cores)),zeros(1,Cores-mod(Len,Cores))];
 interval_len = SplitFunc(nEnd-nStart+1,Cores);
@@ -35,13 +35,13 @@ f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'nearest'
 'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
 t = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
 
-param_path = './Test/mobilenet_v1_1.0_128_quant.json';
+param_path = './Test/mobilenet_v1_1.0_224_quant.json';
 MobileNet = FAST.Net.LiteNet(param_path);
 MobileNet.setNumeric(t);
 MobileNet.setFimath(f);
 MobileNet.getLayer();
 
-img_path ='D:/Dataset/ILSVRC2012/val/ILSVRC2012_img_val/' ;
+img_path ='/home/zhaomingxin/Datasets/ILSVRC2012/val/ILSVRC2012_img_val/' ;
 lbfile = load('./Test/validation_lbs.mat');
 
 tic

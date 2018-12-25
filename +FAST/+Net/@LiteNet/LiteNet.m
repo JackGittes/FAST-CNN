@@ -50,7 +50,9 @@ classdef LiteNet < handle
         end
         
         function getLayer(obj)
-            obj.nn = FAST.ActiveSession('GPU');
+            obj.nn = FAST.Layer.Layer;
+            obj.nn.Device.setMode('GPU');
+            obj.nn.Device.getDeviceInfo();
         end
         res = Forward(obj);
     end

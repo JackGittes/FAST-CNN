@@ -1,0 +1,5 @@
+Image ID: 15280, Top1:  0, Top5:  0, Total: 0, Top1 Total:     0, Top5 Total:     1
+Image ID: 15281, Top1:  0, Top5:  0, Total: 0, Top1 Total:     0, Top5 Total:     2
+Image ID: 15282, Top1:  1, Top5:  1, Total: 1, Top1 Total:     1, Top5 Total:     3
+Image ID: 15283, Top1:  0, Top5:  1, Total: 1, Top1 Total:     2, Top5 Total:     4
+Image ID: 15284, Top1:  1, Top5:  1, Total: 2, Top1 Total:     3, Top5 Total:     5

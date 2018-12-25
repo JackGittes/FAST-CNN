@@ -18,7 +18,9 @@ function [totNum,pred_top_1,pred_top_5] = runOnDataset(imStart,imEnd,net,lbs,imp
         
         totNum = totNum + 1;
         
-        img = FAST.img.SingleImageCrop(img);
+%         img = FAST.img.SingleImageCrop(img,224);
+%         img = FAST.img.PadLeftRight(img);
+        img = FAST.img.CropToShape(img,[224,256]);
         net.getInputs(img);
         pred = net.Forward();
         

@@ -13,8 +13,7 @@ classdef BaseLayer < handle
 	
 	methods
 		function obj = BaseLayer()
-			obj.Device = FAST.utils.Device;
-			obj.Device.setMode('GPU');
+            obj.Device = FAST.utils.Device;
             fprintf(2,'Computation Environment Initialized.\n');
         end
         function Mode = get.Mode(obj)
@@ -22,7 +21,7 @@ classdef BaseLayer < handle
         end
         
         function delete(~)
-            disp('Clear Residual Data.');
+            disp('Residual Data Cleared.');
         end
 	end
 end

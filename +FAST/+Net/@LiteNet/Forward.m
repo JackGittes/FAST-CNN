@@ -112,7 +112,7 @@ function res = Forward(obj)
                 window_shape = [pool_op.filter_height,pool_op.filter_width];
                 
                 net = fi(net,t,f);
-                net = nn.Pooling(net,t,f,window_shape,'AVG',stride,padding);
+                net = nn.Pooling(net,t,f,[7,8],'AVG',stride,padding);
                 net = bitshift(net,-3);
                 net = fi(net,1,8,0);
                 fprintf('Pooling Max is %d, Min is %d\n',max(net(:)),min(net(:)));
