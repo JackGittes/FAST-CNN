@@ -47,9 +47,7 @@ function res = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,p
     
     % OutputStage
     [mul,n] = getShiftBits(s1,s2,s3,13);
-    
-%     fprintf('mul: %5d shift: %3d  z_im: %3d z_ker: %3d z_res: %3d shift_n: %2d\n',mul,n,z_im,z_ker,z_res,shift_n);
-    
+        
     res_tmp = FAST.kernel.FastFiMultiply(conv_res,fi(mul,tcal,fcal));
     res = bitshift(res_tmp,-(n-bias_s+shift_n));
     res(res<0)=0;

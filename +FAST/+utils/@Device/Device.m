@@ -29,7 +29,7 @@ classdef Device < handle
                     warning('Unknown Mode.');
             end
         end
-        
+    % Get device info and print it on command window. 
         getDeviceInfo(obj);
     end
 	% Implementation for setting different device mode.

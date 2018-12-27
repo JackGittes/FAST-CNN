@@ -1,0 +1,5 @@
+Time: 1.738483e+01, Total:    15, Top-1:     6, Top-5:    11, Acc-Top-5: 73.33 %
+Time: 7.762558e+01, Total:    94, Top-1:    45, Top-5:    75, Acc-Top-5: 79.79 %
+Time: 1.369345e+02, Total:   173, Top-1:    88, Top-5:   137, Acc-Top-5: 79.19 %
+Time: 1.960096e+02, Total:   251, Top-1:   137, Top-5:   201, Acc-Top-5: 80.08 %
+Time: 2.434299e+02, Total:   313, Top-1:   175, Top-5:   253, Acc-Top-5: 80.83 %

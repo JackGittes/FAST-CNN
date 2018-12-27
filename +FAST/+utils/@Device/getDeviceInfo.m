@@ -1,3 +1,6 @@
+% Author: Zhao Mingxin
+% Date: 2018/12/26
+
 function getDeviceInfo(~)
     gpuInfo = getGPUInfo();
     cpuInfo = getCPUInfo();

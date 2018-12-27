@@ -41,11 +41,11 @@ MobileNet.setNumeric(t);
 MobileNet.setFimath(f);
 MobileNet.getLayer();
 
-img_path ='/home/zhaomingxin/Datasets/ILSVRC2012/val/ILSVRC2012_img_val/' ;
+img_path ='/home/zhaomingxin/Datasets/ILSVRC2012/val/ILSVRC2012_img_val/';
 lbfile = load('./Test/validation_lbs.mat');
 
 tic
-t1 = toc;
+t1 = toc;congi
 LogName = 'Log/ILSVRC2012_TOTAL_Log.txt';
 TotLogID = fopen(LogName,'w');
 spmd
