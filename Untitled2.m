@@ -1,10 +1,6 @@
-spmd
-    tmp = labindex + [1:10];
-    for i = tmp
-        a = i;
-        res = gop(@plus,a,1);
-        disp(res);
-    end
+function res = Untitled2(str,varargin)
+    tmp = str2func(str);
+    res = tmp(varargin{:});
 end
     
     

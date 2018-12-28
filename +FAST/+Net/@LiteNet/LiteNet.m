@@ -1,34 +1,22 @@
+% Author: Zhao Mingxin
+% Date: 2018/12/22
+
 classdef LiteNet < handle
     properties(SetAccess = private)
-        params;
+        model;
         inputs;
         nn;
+        strategy_list;
     end
     
-    properties(Access = public)
+    properties(SetAccess = private)
         Numeric;
         Fimath;
     end
     
-    methods(Static)
-        function res = getJSONParams(path)
-            fprintf(2,'Loading parameters from JSON file.\n');
-            res = jsondecode(fileread(path));
-            fprintf(2,'Parameters Loaded.\n');
-        end
-    end
-    
     methods
-        % Constructor: If JSON path provided, it will get params from JSON.
-        % Otherwise, you can set params later.
-        function obj = LiteNet(path)
-            if nargin>0
-                try
-                    obj.params = obj.getJSONParams(path);
-                catch
-                    error('LiteNet Initialization Failed.');
-                end
-            end
+        function obj = LiteNet()
+            
         end
     end
     
@@ -39,6 +27,10 @@ classdef LiteNet < handle
         
         function setParams(obj,json_params)
             obj.params = json_params;
+        end
+        
+        function getModel(obj,model)
+            obj.model = model;
         end
         
         function setNumeric(obj,Numerictype)
@@ -54,6 +46,9 @@ classdef LiteNet < handle
             obj.nn.Device.setMode('GPU');
             obj.nn.Device.getDeviceInfo();
         end
-        res = Forward(obj);
+        [res1,res2] = Forward(obj);
+        res = Forward_v2(obj);
+        [res1,res2] = Forward_v3(obj);
+        [res1,res2] = Forward_v4(obj);
     end
 end

@@ -1,32 +1,5 @@
-Cores = 40;
-
-p = gcp('nocreate'); % If no pool, do not create new one.
-if isempty(p)
-    tmp = parcluster;
-    tmp.NumWorkers = Cores;
-    parpool('local',Cores);
-else
-    poolsize = p.NumWorkers;
-end
-
 nStart = 1;
-nEnd = 200;
-
-SplitFunc = @(Len,Cores) floor(Len/Cores)*ones(1,Cores)+[ones(1,mod(Len,Cores)),zeros(1,Cores-mod(Len,Cores))];
-interval_len = SplitFunc(nEnd-nStart+1,Cores);
-
-subStart = cell(1,length(interval_len));
-subEnd = cell(1,length(interval_len));
-
-for i = 1:length(interval_len)
-    if i==1
-        subStart{i}=1;
-        subEnd{i}= subStart{i}+interval_len(i)-1;
-    else
-        subStart{i} = subEnd{i-1}+1;
-        subEnd{i}= subStart{i}+interval_len(i)-1;
-    end
-end
+nEnd = 1;
 
 wordlen =32;
 fraclen =0;
@@ -35,21 +8,40 @@ f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'nearest'
 'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
 t = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
 
-param_path = './Test/mobilenet_v1_1.0_128_quant.json';
-MobileNet = FAST.Net.LiteNet(param_path);
+parsed_model = load('./Test/MobileNet_224_1.0.mat');
+MobileNet = FAST.Net.LiteNet();
 MobileNet.setNumeric(t);
 MobileNet.setFimath(f);
 MobileNet.getLayer();
+MobileNet.getModel(parsed_model.model);
 
-img_path ='D:/Dataset/ILSVRC2012/val/ILSVRC2012_img_val/';
+img_path ='D:/Dataset/ILSVRC2012_img_val/';
 lbfile = load('./Test/validation_lbs.mat');
 
-nameNum = [num2str(subStart{1},'%05d'),'_',num2str(subEnd{1},'%05d')];
-    filename = strcat('Log/ILSVRC2012_VAL_',nameNum,'.txt');
-    LogID = fopen(filename,'w');
-
 profile on
-    [totNum,pred1,pred5] = FAST.Net.runOnDataset(subStart{1},subEnd{1},MobileNet,...
-    lbfile,img_path,@FAST.img.ILSVRC_loader,LogID);
-    res=[totNum,pred1,pred5];
+tic
+t1 = toc;
+val = lbfile.val_lbs;
+[totNum,sp1,sp5,p1,p5] = deal(0.,0.,0.,0.,0.);
+counter = 0;
+for idx = nStart:nEnd
+    imlb = val.Label(idx);
+    try
+        img = FAST.img.ILSVRC_loader(img_path,idx,lbfile);
+        img = FAST.img.CropToShape(img,[224,224]);
+        [p1,p5,stat] = FAST.Net.runNetOnce(MobileNet,img,imlb+2);
+        totNum = totNum + 1;
+        [sp1,sp5] = deal(sp1+p1,sp5+p5);
+    catch err
+        totNum = totNum + 0;
+        disp(err);
+        disp(err.stack);
+    end
+    counter = counter+1;
+
+    if mod(counter,5)==0 && counter>0
+        time_lab1 = toc;
+        fprintf('Time: %6d, Total: %5d, Top-1: %5d, Top-5: %5d, Acc-Top-5: %3.2f %%\n',time_lab1,totNum,sp1,sp5,sp5/totNum*100.0);
+    end
+end
 profile viewer

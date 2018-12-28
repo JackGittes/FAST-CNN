@@ -2,8 +2,8 @@
 % Date: 2018/12/22
 % Description: run tflite Conv2d.
 
-function res = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,padding,bias,shift_n,bias_s)
-    wordlen = 16;
+function [res,stat] = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,padding,bias,shift_n,bias_s)
+    wordlen = 32;
     fraclen = 0;
     
     fcal = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'nearest', ... 
@@ -16,7 +16,6 @@ function res = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,p
     % This step can be done offline.
     ker_int = fi(ker,tcal,fcal);
     z_ker = fi(z_ker,tcal,fcal);
-    
     ker_int = FAST.kernel.FastFiAddSub(ker_int,z_ker,@minus);
     
     ker_int(ker_int>127)=127;
@@ -33,7 +32,8 @@ function res = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,p
     end
     
     conv_res = obj.AddBias(conv_res,bitshift(fi(bias,tcal,fcal),-bias_s),tcal,fcal);
-
+%     fprintf('max is %5d,min is %5d, mean is %5d \n',max(conv_res.data(:)),min(conv_res.data(:)),mean(conv_res.data(:)));
+    
     conv_res = fi(conv_res,1,16,0);
     
     wordlen = 32;
@@ -50,8 +50,11 @@ function res = LiteConv2d(obj,im,ker,z_im,z_ker,z_res,s1,s2,s3,ConvType,stride,p
         
     res_tmp = FAST.kernel.FastFiMultiply(conv_res,fi(mul,tcal,fcal));
     res = bitshift(res_tmp,-(n-bias_s+shift_n));
+%     fprintf('mul %5d,shift is %5d\n',mul,n);
+%     fprintf('max is %5d,min is %5d, mean is %5d \n',max(res.data(:)),min(res.data(:)),mean(res.data(:)));
     res(res<0)=0;
     res = fi(res,1,8,0);
+    stat = res.data(:);
 end
 
 function [mul,n] = getShiftBits(s1,s2,s3,base)

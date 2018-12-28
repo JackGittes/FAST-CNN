@@ -1,6 +1,6 @@
 import FAST.*
 Cores = setCores(16);
-[subStart,subEnd] = FAST.op.divideDataset(Cores,1,320);
+[subStart,subEnd] = FAST.op.divideDataset(Cores,1,2000);
 
 wordlen =32;
 fraclen =0;
@@ -14,7 +14,14 @@ img_path ='D:/Dataset/ILSVRC2012_img_val/';
 lbfile = load('./Test/validation_lbs.mat');
 LogName = 'Log/ILSVRC2012_TOTAL_Log_test.txt';
 
-MobileNet = LiteNetInitialize(param_path,t,f);
+parsed_model = load('./Test/MobileNet_224_1.0.mat');
+
+% MobileNet = LiteNetInitialize(~,t,f);
+MobileNet = FAST.Net.LiteNet();
+MobileNet.setNumeric(t);
+MobileNet.setFimath(f);
+MobileNet.getLayer();
+MobileNet.getModel(parsed_model.model);
 
 tic
 t1 = toc;
@@ -44,6 +51,7 @@ spmd
             time_lab1 = toc;
             if labindex == 1
                 fprintf(LogID,'Time: %6d, Total: %5d, Top-1: %5d, Top-5: %5d, Acc-Top-5: %3.2f %%\n',time_lab1,r(1),r(2),r(3),r(3)/r(1)*100.0);
+                fprintf('Time: %6d, Total: %5d, Top-1: %5d, Top-5: %5d, Acc-Top-5: %3.2f %%\n',time_lab1,r(1),r(2),r(3),r(3)/r(1)*100.0);
             end
         end
     end
@@ -51,6 +59,7 @@ spmd
     time_lab1 = toc;
     if labindex == 1
         fprintf(LogID,'Time: %6d, Total: %5d, Top-1: %5d, Top-5: %5d, Acc-Top-5: %3.2f %%\n',time_lab1,r(1),r(2),r(3),r(3)/r(1)*100.0);
+        fprintf('Time: %6d, Total: %5d, Top-1: %5d, Top-5: %5d, Acc-Top-5: %3.2f %%\n',time_lab1,r(1),r(2),r(3),r(3)/r(1)*100.0);
     end
     fclose(LogID);
 end
