@@ -22,7 +22,7 @@ function res = ActiveSession(mode,hint)
     end
     res = FAST.Layer.Layer;
     res.Device.setMode(mode);
-    if hint
+    if hint == 1
         res.Device.getDeviceInfo();
     end
 end
