@@ -7,15 +7,7 @@
 % transform flatc_buffer pre-defined parameters to TensorFlow-style
 % parameters so that we can use these params to perform inference using
 % FixedCNN simulation library.
-function res = getTFStyleParams(par,shape,layer_type)
-    switch layer_type
-        case 'Conv2d'
-            tmp = permute(reshape(par,fliplr(shape')),[4,3,2,1]);
-            res = permute(tmp,[2,3,4,1]);
-        case 'DepthwiseConv2d'
-            tmp = permute(reshape(par,fliplr(shape')),[4,3,2,1]);
-            res = permute(tmp,[2,3,4,1]);
-        otherwise
-            error('Unknown Layer Type.');
-    end
+function res = getTFStyleParam(par,shape)
+    tmp = permute(reshape(par,fliplr(shape')),[4,3,2,1]);
+    res = permute(tmp,[2,3,4,1]);
 end

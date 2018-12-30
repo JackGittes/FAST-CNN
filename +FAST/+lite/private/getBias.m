@@ -2,7 +2,7 @@
 % Date:   2018/12/10
 % Description: as below
 
-function res = getTFStyleBias(ubias)
+function res = getBias(ubias)
     int8bias = reshape(ubias,4,[])';
     [h,~]=size(int8bias);
     bias_cell = mat2cell(int8bias,ones(1,h),4);

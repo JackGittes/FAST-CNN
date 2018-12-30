@@ -1,8 +1,8 @@
 % Author: Zhao Mingxin
 % Date:   2018/12/10
-% Description: as below
+% Description: Details can be found in Google 8-bit Quantization Paper.
 
-function [mul,n] = getShiftBits(s1,s2,s3,base)
+function [mul,n] = getMulShift(s1,s2,s3,base)
     M = s1*s2/s3;
     n0 = 0;
     while M<0.5

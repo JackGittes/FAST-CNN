@@ -2,14 +2,47 @@
 % Date: 2018/12/23
 % Description: Net class.
 
-classdef Net
-    properties
-        input_tensor;
-        output;
+classdef Net < handle
+    properties(SetAccess = private)
+        model;
+        inputs;
         nn;
+        strategy_list;
+    end
+    
+    properties(SetAccess = private)
+        Numeric;
+        Fimath;
     end
     
     methods
-        LogWriter();
+        function getInputs(obj,input_im)
+            obj.inputs = input_im;
+        end
+        
+        function setParams(obj,json_params)
+            obj.params = json_params;
+        end
+        
+        function getModel(obj,model)
+            obj.model = model;
+        end
+        
+        function setNumeric(obj,Numerictype)
+            obj.Numeric = Numerictype;
+        end
+        
+        function setFimath(obj,Fimath)
+            obj.Fimath = Fimath;
+        end
+        
+        function getLayer(obj)
+            obj.nn = FAST.Layer.Layer;
+            obj.nn.Device.setMode('GPU');
+            obj.nn.Device.getDeviceInfo();
+        end
+        
+        res = getStrategy(obj,config);
+        res = StrategyExecutor(obj,stgy,input);
     end
 end

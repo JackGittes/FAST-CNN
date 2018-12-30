@@ -28,7 +28,7 @@ for idx = nStart:nEnd
     imlb = val.Label(idx);
     try
         img = FAST.img.ILSVRC_loader(img_path,idx,lbfile);
-        img = FAST.img.CropToShape(img,[224,224]);
+        img = FAST.img.CropToShape(img,[224,256]);
         [p1,p5,stat] = FAST.Net.runNetOnce(MobileNet,img,imlb+2);
         totNum = totNum + 1;
         [sp1,sp5] = deal(sp1+p1,sp5+p5);

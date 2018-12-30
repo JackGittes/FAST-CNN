@@ -1,5 +1,6 @@
 % Author: Zhao Mingxin
 % Date: 2018/12/26
+% Description: Get device information and check status.
 
 function getDeviceInfo(~)
     gpuInfo = getGPUInfo();

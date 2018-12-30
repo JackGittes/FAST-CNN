@@ -3,8 +3,8 @@
 % Description: Pooling function for 2d pooling of input tensor
 
 function res = Pooling(~,im,t,f,window_shape,pool_type,stride,pad_method)
-    poolreg ={'MAX','AVG'};
-    poolregfunc = {'max','mean'};
+    poolreg ={'MAX','AVG','LiteAVG'};
+    poolregfunc = {'max','mean','LiteAVG'};
     func_reg = containers.Map(poolreg,poolregfunc);
     
     % Do necessary check for input args.
@@ -44,4 +44,11 @@ function res = PoolingTensor(im,im_d,channel_size,out_size,window_shape,stride,p
     
 %   Implement pooling function on im2col and reshape result into output shape
     res = permute(reshape(pool_func(im(tmp1)),[fliplr(out_size),im_d]),[2,1,3]);
+end
+
+function res = LiteAVG(x)
+    [num,~] = size(x);
+    mul = floor(2^17/num);
+    shift = 17;
+    res = bitshift(sum(x)*mul,-shift);
 end

@@ -1,6 +1,6 @@
 % Author: Zhao Mingxin
 % Date:   2018/12/24
-% Description: 
+% Description: same as FastFiAddSub
 
 function res = FastFiMultiply(a,b)
     assert(isfi(a)&&isfi(b),"Fast Multiplication is Only used for fi object.");
