@@ -1,4 +1,4 @@
-% Auto Generated in 2018-12-28 16:12:24 By MATLAB 2018a
+% Auto Generated in 2019-01-02 22:34:56 By MATLAB 2018a
 % Author: Zhao Mingxin
 classdef Layer < FAST.Layer.BaseLayer
 	 methods

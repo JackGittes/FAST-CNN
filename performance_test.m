@@ -8,7 +8,7 @@ f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'nearest'
 'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
 t = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
 
-parsed_model = load('./Test/MobileNet_224_1.0.mat');
+parsed_model = load('./Test/MobileNet_128_1.0.mat');
 MobileNet = FAST.Net.LiteNet();
 MobileNet.setNumeric(t);
 MobileNet.setFimath(f);
@@ -28,7 +28,7 @@ for idx = nStart:nEnd
     imlb = val.Label(idx);
     try
         img = FAST.img.ILSVRC_loader(img_path,idx,lbfile);
-        img = FAST.img.CropToShape(img,[224,256]);
+        img = FAST.img.CropToShape(img,[128,128]);
         [p1,p5,stat] = FAST.Net.runNetOnce(MobileNet,img,imlb+2);
         totNum = totNum + 1;
         [sp1,sp5] = deal(sp1+p1,sp5+p5);

@@ -15,7 +15,7 @@ function [res,stat] = Forward_v5(obj)
     strategy  = zeros(1,length(model));
     shift_list=[1,2,1,0,0,0,0,1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,2,0,2,0,0];
     
-    stat = cell(1,length(model));
+%     stat = cell(1,length(model));
     for i=1:length(model)
         layer = model(i);
         if i==1
@@ -68,11 +68,8 @@ function [res,stat] = Forward_v5(obj)
                     s(1) = 1.0/alpha*s(1);
                 end
                 
-                if strcmp(ConvFunc,'nn.Conv2d') 
-                    conv_res = nn.Conv2d(im_int,ker_int,tcal,fcal,stride,padding);
-                else
-                    conv_res = nn.DepthwiseConv2d(im_int,ker_int,tcal,fcal,stride,padding);
-                end
+                ConvFunc_ = [ConvFunc,'(','im_int,','ker_int,','tcal,','fcal,','stride,','padding',')',';'];
+                conv_res = eval(ConvFunc_);
                               
                 conv_res = nn.AddBias(conv_res,bitshift(fi(bias,tcal,fcal),-bias_sft),tcal,fcal);
                 conv_res = fi(conv_res,1,16,0);
@@ -88,19 +85,32 @@ function [res,stat] = Forward_v5(obj)
                 else
                     net = conv_res;
                 end
-                stat{i} = net.data(:);
+%                 stat{i} = net.data(:);
+                stat(i).type = layer.type;
+                stat(i).weight = ker_int;
+                stat(i).bias = bitshift(fi(bias,tcal,fcal),-bias_sft);
+                stat(i).mul = mul;
+                stat(i).shift = n-bias_sft+shift;
+                stat(i).builtin = layer.builtin;
             case 'Softmax'
 %                 fprintf(2,'Softmax Layer Detected.\n');
+                stat(i).type = layer.type;
             case 'Pooling'
                 [stride,padding] = deal(layer.builtin.stride,layer.builtin.padding);
                 net = fi(net,t,f);
-                net = nn.Pooling(net,t,f,[7,8],'LiteAVG',stride,padding);
-                stat{i} = net.data(:);
+                net = nn.Pooling(net,t,f,[4,4],'LiteAVG',stride,padding);
+%                 stat{i} = net.data(:);
                 net = bitshift(net,-2);
                 net = fi(net,1,8,0);
+                
+                stat(i).type = layer.type;
+                stat(i).builtin = layer.builtin;
             case 'Reshape'
                 new_shape = layer.builtin.new_shape;
                 net = reshape(net,new_shape);
+                
+                stat(i).type = layer.type;
+                stat(i).builtin = layer.builtin;
             otherwise
                 warning('Unknown OP type detected.');
         end

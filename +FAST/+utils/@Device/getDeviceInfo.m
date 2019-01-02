@@ -1,6 +1,7 @@
 % Author: Zhao Mingxin
 % Date: 2018/12/26
 % Description: Get device information and check status.
+% Device information is useful for users to check if their codes run normally.
 
 function getDeviceInfo(~)
     gpuInfo = getGPUInfo();
@@ -15,6 +16,8 @@ function getDeviceInfo(~)
     disp(res);
 end
 
+% Must be CUDA compatible GPU. AMD and other GPU vendors are not supported
+% by MATLAB parallel computation toolbox.
 function res = getGPUInfo()
     res = struct;
     if gpuDeviceCount>0
@@ -29,6 +32,9 @@ function res = getGPUInfo()
     end
 end
 
+% It's very complex to get CPU ID and details from MATLAB API, so I just
+% replace CPU info with OS info. What you will see on command window is
+% 'PCWIN64' or something like this.
 function res = getCPUInfo()
     res = struct;
     res.name = computer;

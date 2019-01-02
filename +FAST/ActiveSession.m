@@ -17,16 +17,16 @@ function res = ActiveSession(mode,hint)
         hint = 1;
     end
     
-    % In order to fully clear residual data in memory, AutoDeclare will try
-    % MAX_TRY times making sure that all changes have been added into class
-    % interface.
+    % In order to totally clear residual data in memory, AutoDeclare will try
+    % MAX_TRY times to make sure that all changes have been added into class
+    % interfaces.
     for i = 1:MAX_TRY
         try
             % Scan Layer and Net class folder and check if there are any
             % function changed. If new function added into Layer and Net
             % class or input/output definition of existing function
             % changed, the AutoDeclare will automatically modify the
-            % class interface.
+            % class interfaces.
             FAST.utils.AutoDeclare('Layer', '+FAST/+Layer/@Layer/','FAST.Layer.BaseLayer','+FAST/+Layer/@Layer/');
             FAST.utils.AutoDeclare('LiteNet','+FAST/+Net/@LiteNet/','FAST.Net.Net','+FAST/+Net/@LiteNet/');
             break;
@@ -34,8 +34,13 @@ function res = ActiveSession(mode,hint)
             continue;
         end
     end
+    % It will return a Layer class by default, because I want to
+    % provide a Procedure Oriented Interface for someone who use this
+    % toolbox for the first time.
     res = FAST.Layer.Layer;
     res.Device.setMode(mode);
+    % Default hint is 1 which means it will print device information on
+    % MATLAB command window.
     if hint == 1
         res.Device.getDeviceInfo();
     end

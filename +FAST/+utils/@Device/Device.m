@@ -38,4 +38,9 @@ classdef Device < handle
         setMultiCore(obj);
         setSingleCore(obj);
     end
+    
+    methods(Static)
+        % Set cores
+        res = setCores(Cores);
+    end
 end

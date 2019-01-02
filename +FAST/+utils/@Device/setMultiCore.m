@@ -9,9 +9,14 @@ function setMultiCore(obj)
 		p = parcluster('local');
 		obj.NumCores = p.NumWorkers;
 		obj.Mode = 'MultiCore';
+        parpool('local');
 	catch
 		warning('Fail to turn on MultiCore mode.');
 		obj.NumCores = 1;
 		obj.Mode = 'SingleCore';
 	end
+end
+
+function res = getCurrentStatus()
+
 end

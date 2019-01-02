@@ -24,55 +24,44 @@ function [res,stat] = Forward_beta(obj)
         end
         switch layer.type
             case {'Conv2d','DepthwiseConv2d'}
-                ConvFunc = ['nn.',layer.type];
+                [weight,bias,stride,padding,s,z] = deal(layer.weight,layer.bias,...
+                    layer.builtin.stride,layer.builtin.padding,layer.scale,layer.zero_point);
                 
-                if ~isempty(Strategy(i).net)
-                   net = obj.StrategyExecutor(Strategy(i).net,net); 
-                end
-                
-                if ~isempty(Strategy(i).weight)
-                   ker_int = obj.StrategyExecutor(Strategy(i).weight,net); 
-                end
-                
-                if ~isempty(Strategy(i).bias)
-                   bias = obj.StrategyExecutor(Strategy(i).bias,bias);
-                end
+                net = StrategyNodeChecker(obj,Strategy(i).net,net);
+                weight = StrategyNodeChecker(obj,Strategy(i).weight,weight);
+                bias = StrategyNodeChecker(obj,Strategy(i).bias,bias);
 
-                if strcmp(ConvFunc,'nn.Conv2d') 
-                    conv_res = nn.Conv2d(im_int,ker_int,t,f,stride,padding);
-                else
-                    conv_res = nn.DepthwiseConv2d(im_int,ker_int,t,f,stride,padding);
-                end
-                
-                if ~isempty(Strategy(i).Conv)
-                    conv_res = obj.StrategyExecutor(Strategy(i).Conv,conv_res);
-                end
+                ConvFunc = ['nn.',layer.type,'(','net,','weight,','tcal,','fcal,','stride,','padding',')',';'];
+                conv_res = eval(ConvFunc);
+                conv_res = StrategyNodeChecker(obj,Strategy(i).Conv,conv_res);
                 
                 conv_res = nn.AddBias(conv_res,bias,t,f);
                 
-                if ~isempty(Strategy(i).Output)
-                    net = obj.StrategyExecutor(Strategy(i).Output,conv_res);
-                end
+                net = StrategyNodeChecker(obj,Strategy(i).Output,conv_res);
                 stat{i} = net.data(:);
             case 'Softmax'
-
             case 'Pooling'
                 [stride,padding] = deal(layer.builtin.stride,layer.builtin.padding);
                 
-                if ~isempty(Strategy(i).prePooling)
-                    net = obj.StrategyExecutor(Strategy(i).prePooling,net);
-                end
+                net = StrategyNodeChecker(obj,Strategy(i).prePooling,net);
                 net = nn.Pooling(net,t,f,[7,8],'LiteAVG',stride,padding);
+                
                 stat{i} = net.data(:);
-                if ~isempty(Strategy(i).postPooling)
-                    net = obj.StrategyExecutor(Strategy(i).postPooling,net);
-                end
+                net = StrategyNodeChecker(obj,Strategy(i).postPooling,net);
             case 'Reshape'
                 new_shape = layer.builtin.new_shape;
                 net = reshape(net,new_shape);
             otherwise
-                warning('Unknown OP type detected.');
+                warning('Unknown layer type detected.');
         end
     end
     res = net;
+end
+
+function res = StrategyNodeChecker(obj,Strategy,input)
+    if ~isempty(Strategy)
+        res = obj.StrategyExecutor(Strategy,input);
+    else
+        res = input;
+    end
 end

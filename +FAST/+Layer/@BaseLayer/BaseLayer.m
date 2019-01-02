@@ -7,7 +7,7 @@ classdef BaseLayer < handle
 	properties(SetAccess = private,Dependent)
 		Mode;
     end
-	properties
+	properties(SetAccess = private)
 		Device;
 	end
 	
