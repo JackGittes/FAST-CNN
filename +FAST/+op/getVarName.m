@@ -4,7 +4,7 @@
 
 function res = getVarName(varargin)
     LEN = length(varargin);
-    assert(LEN>=1,"Input variable number must >= 1.");
+    assert(LEN >= 1,"Input variable number must >= 1.");
     res = sprintf('%s',inputname(1));
     if LEN >= 2
         for i= 2:LEN
