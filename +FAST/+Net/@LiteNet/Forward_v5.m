@@ -67,8 +67,8 @@ function [res,stat] = Forward_v5(obj)
                     
                     s(1) = 1.0/alpha*s(1);
                 end
-                
-                ConvFunc_ = [ConvFunc,'(','im_int,','ker_int,','tcal,','fcal,','stride,','padding',')',';'];
+                inputVar = FAST.op.getVarName(im_int,ker_int,tcal,fcal,stride,padding);
+                ConvFunc_ = [ConvFunc,'(',inputVar,')',';'];
                 conv_res = eval(ConvFunc_);
                               
                 conv_res = nn.AddBias(conv_res,bitshift(fi(bias,tcal,fcal),-bias_sft),tcal,fcal);
