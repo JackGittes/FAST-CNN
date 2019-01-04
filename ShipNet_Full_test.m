@@ -5,7 +5,7 @@ catg = {'boat','land','sea'};
 model = load('./Test/shipnet.mat');
 
 Cores = 15;
-% Cores = nn.Device.setCores(Cores);
+Cores = nn.Device.setCores(Cores);
 
 CLASS = 3;
 MAX_STEP = 1000;
@@ -45,7 +45,7 @@ spmd
             img = img(:,:,1:3);
         end
         input = imresize(img,INPUT_SIZE);
-        [res,stat] = ShipNet_baseline(nn,net,input);
+        [res,stat] = ShipNet_test(nn,net,input);
         
 %         current_ = findMaxMin(stat);
 %         if i == subStart{labindex}

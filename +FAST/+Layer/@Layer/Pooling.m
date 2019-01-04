@@ -48,7 +48,7 @@ end
 
 function res = LiteAVG(x)
     [num,~] = size(x);
-    mul = floor(2^17/num);
-    shift = 17;
+    mul = floor(2^8/num);
+    shift = 8;
     res = bitshift(sum(x)*mul,-shift);
 end
