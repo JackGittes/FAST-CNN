@@ -2,10 +2,13 @@ function [res,stat] = runOnDataset(obj)
 %     if obj.needLog ~=0
 %         LogID = fopen(obj.Log_path,'w');
 %     end
+    obj.InitialCheck(obj);
+    
     device = FAST.utils.Device;
     lbs = obj.LabelList;
     Cores = device.setCores(obj.Config.Cores);
     [subStart,subEnd] = FAST.op.divideDataset(Cores,obj.Config.Start,obj.Config.End);
+    
     nn = FAST.Layer.Layer;
     nn.Device.setMode('GPU');
     
@@ -21,8 +24,8 @@ function [res,stat] = runOnDataset(obj)
             prepocessFunc = str2func(obj.Config.Preprocess);
             input = prepocessFunc(img,obj.Config.INPUT_SIZE);
             [res,stat] = obj.Net(nn,obj.model,input);
-            totNum = totNum +1;
             
+            totNum = totNum +1;
             [~,idx] = max(res);
             if idx == lbs(i)
                 corrt = corrt +1;

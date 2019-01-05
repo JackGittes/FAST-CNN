@@ -1,6 +1,15 @@
 % Author: Zhao Mingxin
 % Date:   2018/12/25
 % Description: as below
+%{
+    Args: 
+        a\b: fi object need to be converted to INT type.
+        type: specific output format, no default value.
+    Return:
+    Error: 
+        TypeError_1: non-fi object inputs detected.
+        TypeError_2: non-supported convert type.
+%}
 
 function [int_a,int_b,WordLen,FracLen,up_bound,low_bound] = FiToInt(a,b,type)
     assert(isfi(a)&&isfi(b),"Convert Function Only supports fi object.");

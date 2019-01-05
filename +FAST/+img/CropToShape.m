@@ -1,3 +1,17 @@
+% Author: Zhao Mingxin
+% Date: 2018/12/24
+% Description: Crop function used to crop any input image to specific
+% shape.
+%{
+    Args: 
+        Input image(whatever depth), Output shape
+    Return:
+        Central cropped image with output shape.
+    Error: No error defined in this function.
+    TODO:
+        Rewrite a more clean version.
+%}
+
 function res = CropToShape(img,shape)
     [h,w,~]=size(img);
     im_shape = [h,w];

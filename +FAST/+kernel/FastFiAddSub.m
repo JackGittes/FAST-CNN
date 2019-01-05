@@ -4,6 +4,15 @@
 % Sub by ordinary int Add and Sub with overflow detection to achieve higher 
 % computation efficiency. 
 
+%{
+    Args:
+        Input numbers\vectors\matrixs to apply elementwise addition or substraction.
+        Op: addition or substraction
+    Return:
+        Result of a +(-)b, the result format is same as a/b(fi object).
+    Error: TypeError, if a or b are not fi object it will throw an error.
+%}
+
 function res = FastFiAddSub(a,b,Op)
     assert(isfi(a)&&isfi(b),"Fast Add is Only used for fi object.");
     

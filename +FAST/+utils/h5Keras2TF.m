@@ -1,3 +1,9 @@
+% Author: Zhao Mingxin
+% Date:   2019/1/4
+% Description: Convert Keras .h5 file to tensorflow compatible format.
+% NOTE: It's NOT a general purpose converter, just to convert ShipNet
+% weight file. So it's better not to use it on other Keras CNN .h5 file. 
+
 function net = h5Keras2TF(weight_file)
     if nargin == 0
         weight_file ='./Test/0122.h5';
