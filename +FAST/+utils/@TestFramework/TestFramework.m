@@ -23,6 +23,7 @@ classdef TestFramework < handle
         % Parameters used to add additional information such as input arguments
         % and so on.
         Additional = 'None';
+        DebugMode = false;
     end
     
     properties(Access = private)
@@ -38,6 +39,7 @@ classdef TestFramework < handle
     
     methods
         [res,stat] = runOnDataset(obj);
+        [res,stat] = DebugNet(obj,profile_flag);
         SetupCheck(obj);
     end
 end
