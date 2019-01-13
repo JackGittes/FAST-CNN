@@ -36,7 +36,7 @@ for i = 1:MAX_STEP
     else
         continue;
     end
-    [res,stat] = ShipNet_test(nn,net,input);
+    [res,stat] = ShipNet_test(nn,net,shipim);
     [~,idx] = max(res);
     
     if idx == rand_cat

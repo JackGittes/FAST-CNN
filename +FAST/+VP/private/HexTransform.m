@@ -4,9 +4,10 @@
     Args: 
         tensor/matrix/vector of fi object.
     Return:
-        Byte form tensor/matrix/vector ranging from [0,255]
+        Byte tensor/matrix/vector ranging from [0,255]
     For example, if a fi number is 16 bitwidth, HexTransform will split
-    this number into two UINT8 number.
+    this number into two UINT8 numbers. Like this, -7503 ->
+    [177,226](uint8).
 %}
 
 function res = HexTransform(x)

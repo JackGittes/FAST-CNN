@@ -2,7 +2,7 @@
 
 function [res,stat] = ShipNet_test(nn,model,input,t,f)
     if nargin < 4
-        wordlen = 16;
+        wordlen = 32;
         fraclen = 0;
         f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
         'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...

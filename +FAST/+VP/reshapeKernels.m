@@ -1,6 +1,6 @@
 function res = reshapeKernels(k)
     [h,w,k_in,k_out]=size(k);
-    tmp_ = reshape(permute(k,[1,2,4,3]),h*w,2,[]);
+    tmp_ = reshape(permute(k,[2,1,4,3]),h*w,2,[]);
     tmp_ = permute(tmp_,[2,1,3]);
     flt_ = tmp_(:);
     

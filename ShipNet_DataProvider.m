@@ -17,7 +17,7 @@ tmp.FC = model(6).weight;
 % profile on 
 [data,mem_tab,b_m]=FAST.VP.prepareData(shipim,tmp,model);
 % profile viewer
-
+data = [data;repmat('0',[2048-1623,256])];
 fileID = fopen('./Test/taskdata.dat','w');
 fprintf(fileID,data);
 fclose(fileID);
