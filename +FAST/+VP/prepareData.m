@@ -5,11 +5,12 @@ function [data,mem_tab,byte_mat]= prepareData(img,model,orgin_model)
     
     offset = FAST.VP.mem.getSectionEndAddr(memForParams);
 
-    memForMaps = FAST.VP.MemoryAllocator('Map',size(img),orgin_model,offset);
+    memForMaps = FAST.VP.MemoryAllocator('Map',size(img),orgin_model,offset+34+256);
     mem_tab = [memForInput;memForParams;memForMaps];
     
     conv_ = FAST.VP.storeKernels(model.kernel{:});
     FC_ = FAST.VP.reshapeFC(model.FC);
+    FC_ = [zeros(1,104),FC_];
     bias_byte = FAST.VP.storeBias(model.bias{:});
 
     img_ = floor(double(img)/2);

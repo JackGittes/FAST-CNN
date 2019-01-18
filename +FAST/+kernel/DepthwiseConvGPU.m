@@ -28,7 +28,7 @@ function res = DepthwiseConvGPU(im,ker,t,f,im_d,multiplier,channel_size,out_size
     ker_pad(1:multiplier,1:prod(window_shape),:)=ker_in;
     im_pad(1:prod(window_shape),1:prod(out_size),:)=im_in;
     
-    gpu_kernel=parallel.gpu.CUDAKernel('+FAST/+cuda/DepthwiseGEMM/DepthwiseGEMM.ptx','+FAST/+cuda/DepthwiseGEMM/DepthwiseGEMM.cu');
+    gpu_kernel=parallel.gpu.CUDAKernel('+FAST/+cuda/DepthwiseGEMM/64_bit/DepthwiseGEMM_64.ptx','+FAST/+cuda/DepthwiseGEMM/64_bit/DepthwiseGEMM_64.cu');
     gpu_kernel.GridSize=[ker_hn,im_wn,im_d];
     gpu_kernel.ThreadBlockSize=[blk_size,blk_size,1];
     
