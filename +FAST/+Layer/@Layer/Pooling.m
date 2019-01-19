@@ -47,8 +47,8 @@ function res = PoolingTensor(im,im_d,channel_size,out_size,window_shape,stride,p
 end
 
 function res = LiteAVG(x)
-%     [num,~] = size(x);
-%     mul = floor(2^8/num);
-%     shift = 8;
-    res = bitshift(sum(x),-4);
+    [num,~] = size(x);
+    mul = floor(2^13/num);
+    shift = 13;
+    res = bitshift(sum(x)*mul,-shift);
 end

@@ -1,4 +1,4 @@
-Time: 1.264324e+01, Total:    14, Top-1:    10, Top-5:    13, Acc-Top-5: 92.86 %
-Time: 7.804648e+01, Total:    93, Top-1:    67, Top-5:    85, Acc-Top-5: 91.40 %
-Time: 1.416734e+02, Total:   171, Top-1:   118, Top-5:   149, Acc-Top-5: 87.13 %
-Time: 2.055290e+02, Total:   248, Top-1:   170, Top-5:   216, Acc-Top-5: 87.10 %
+Time: 1.417076e+01, Total:    15, Top-1:    12, Top-5:    14, Acc-Top-5: 93.33 %
+Time: 7.926824e+01, Total:    89, Top-1:    60, Top-5:    73, Acc-Top-5: 82.02 %
+Time: 1.449549e+02, Total:   162, Top-1:   111, Top-5:   133, Acc-Top-5: 82.10 %
+Time: 2.109197e+02, Total:   236, Top-1:   164, Top-5:   200, Acc-Top-5: 84.75 %

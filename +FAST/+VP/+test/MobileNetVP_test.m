@@ -1,5 +1,5 @@
 import FAST.*
-Cores = setCores(16);
+Cores = 15;
 [subStart,subEnd] = FAST.op.divideDataset(Cores,1,2000);
 
 wordlen =32;
@@ -9,18 +9,18 @@ f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', 
 'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
 t = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
 
-param_path = './Test/mobilenet_v1_1.0_224_quant.json';
 img_path ='/media/zhaomingxin/winD/Dataset/ILSVRC2012_img_val/';
 lbfile = load('./Test/validation_lbs.mat');
-LogName = 'Log/ILSVRC2012_TOTAL_Log_test.txt';
+LogName = './Log/ILSVRC2012_TOTAL_Log_test.txt';
 
-parsed_model = load('./Test/MobileNet_224x256_1.0_ACC_87.34.mat');
+parsed_model = load('./Test/params_224_acc_87.34.mat');
 
 MobileNet = FAST.Net.LiteNet();
+MobileNet.getLayer();
+MobileNet.nn.Device.setCores(Cores);
 MobileNet.setNumeric(t);
 MobileNet.setFimath(f);
-MobileNet.getLayer();
-MobileNet.getModel(parsed_model.model);
+MobileNet.getModel(parsed_model.mobilenet_224_params);
 
 tic
 t1 = toc;
@@ -62,24 +62,5 @@ spmd
     end
     fclose(LogID);
 end
-
 t2 = toc;
 disp(t2-t1);
-
-function Cores = setCores(Cores)
-    p = gcp('nocreate');
-    if isempty(p)
-        tmp = parcluster;
-        tmp.NumWorkers = Cores;
-        parpool('local',Cores);
-    else
-        Cores = p.NumWorkers;
-    end
-end
-
-function Net = LiteNetInitialize(path,t,f)
-    Net = FAST.Net.LiteNet(path);
-    Net.setNumeric(t);
-    Net.setFimath(f);
-    Net.getLayer();
-end
