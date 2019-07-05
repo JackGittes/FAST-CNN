@@ -21,8 +21,9 @@ function res = FXPGEMMonGPU(mat_a,mat_b)
     assert(aw==bh,"Inner Dimension Must Match.");
     
     % Set OverFlow bounds and apply pre-set overflow action on GPU
-    [a_int,b_int,WordLen,FracLen,~,~] = FAST.kernel.FiToInt(mat_a,mat_b,'int32');
-    [up_bound,low_bound]=deal(2^(2*WordLen-1)-1,-2^(2*WordLen-1));
+    [a_int,b_int,WordLen,FracLen,~,~] = FAST.kernel.FiToInt(mat_a,mat_b,'int64');
+%     [up_bound,low_bound]=deal(2^(2*WordLen-1)-1,-2^(2*WordLen-1));
+    [up_bound,low_bound]=deal(2^31-1,-2^31);
     
     if up_bound > 2^31-1 || low_bound < -2^31
         intfunc = str2func('int64');

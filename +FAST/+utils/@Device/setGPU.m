@@ -5,7 +5,7 @@
 
 function setGPU(obj)
 	try
-		gpuDevice();
+		gpuDevice(2);
 		obj.Mode = 'GPU';
 	catch
 		obj.Mode = 'SingleCore';

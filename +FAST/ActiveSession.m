@@ -23,7 +23,7 @@ function res = ActiveSession(mode,hint)
     for i = 1:MAX_TRY
         try
             % Scan Layer and Net class folder and check if there are any
-            % function changed. If new function added into Layer and Net
+            % functions changed. If new function added into Layer and Net
             % class or input/output definition of existing function
             % changed, the AutoDeclare will automatically modify the
             % class interfaces.
@@ -35,7 +35,7 @@ function res = ActiveSession(mode,hint)
         end
     end
     % It will return a Layer class by default, because I want to
-    % provide a Procedure Oriented Interface for someone who use this
+    % provide a Procedure Oriented Interface for someone who uses this
     % toolbox for the first time.
     res = FAST.Layer.Layer;
     res.Device.setMode(mode);

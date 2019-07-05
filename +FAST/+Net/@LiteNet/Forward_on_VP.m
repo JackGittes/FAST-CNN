@@ -15,9 +15,9 @@
         result between layers toughly.
 %}
 
-function res = Forward_on_VP(obj)
+function [res,stat] = Forward_on_VP(obj)
     [model,inputs,tcal,fcal,nn] = deal(obj.model,obj.inputs,obj.Numeric,obj.Fimath,obj.nn);
-    
+    stat = cell(1,length(model));
     for i=1:length(model)
         layer = model(i);
         if i==1
@@ -42,13 +42,15 @@ function res = Forward_on_VP(obj)
                 conv_res = fi(conv_res,tcal,fcal);
                 if i ~=29
                 % OutputStage
-                    res_tmp = FAST.kernel.FastFiMultiply(conv_res,fi(mul,tcal,fcal));
+%                     res_tmp = FAST.kernel.FastFiMultiply(conv_res,fi(mul,tcal,fcal));
+                    res_tmp = conv_res*fi(mul,tcal,fcal);
                     res = bitshift(res_tmp,-shift);
                     res(res<0)=0;
                     net = fi(res,1,8,0);
                 else
                     net = conv_res;
                 end
+                stat{i} = net;
             case 'Softmax'
             case 'Pooling'
                 [stride,padding] = deal(layer.builtin.stride,layer.builtin.padding);
@@ -56,9 +58,11 @@ function res = Forward_on_VP(obj)
                 net = nn.Pooling(net,tcal,fcal,[7,8],'LiteAVG',stride,padding);
                 net = bitshift(net,-2);
                 net = fi(net,1,8,0);
+                stat{i} = net;
             case 'Reshape'
                 new_shape = layer.builtin.new_shape;
                 net = reshape(net,new_shape);
+                stat{i} = net;
             otherwise
                 warning('Unknown OP type detected.');
         end

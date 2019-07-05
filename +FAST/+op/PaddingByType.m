@@ -22,7 +22,7 @@ function [res,out_size,new_channel_size] = PaddingByType(im,t,f,im_d,window_shap
             pad_needed = max((out_size-1).*stride + window_shape - channel_size,[0,0]);
             pad_top_left = floor(pad_needed/2);
         %   pad_bottom_right = pad_needed - pad_top_left;
-            res = fi(zeros([channel_size+pad_needed,im_d]),t,f);        
+            res = fi(zeros([channel_size+pad_needed,im_d]),t,f);
             pad_end = pad_top_left + channel_size;
             res(1+pad_top_left(1):pad_end(1),1+pad_top_left(2):pad_end(2),:)=im;
         case 'VALID'

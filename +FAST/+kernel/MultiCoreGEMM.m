@@ -7,7 +7,7 @@
     multiplication will suffer from communication delay between different cores 
     so that the time becomes longer than ordinary MM inevitablely.
 
-    Upadate 2018/11/29: Add matrix shape judge function. Now the
+    Update 2018/11/29: Add matrix shape judge function. Now the
     MultiCoreGEMM can automatically choose single-core and multi-core mode
     to perform GEMM according to the shape of input matrix. 
     

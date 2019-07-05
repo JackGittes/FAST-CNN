@@ -1,9 +1,9 @@
-weight_file ='./Test/0122.h5';
+weight_file ='./Test/shipcoarse05_loss_50.h5';
 clear net
 tmp = struct;
-net = repmat(tmp,[4,1]);
-layers = {'conv1','conv2','conv3','FC_2'};
-for i =1:4
+net = repmat(tmp,[5,1]);
+layers = {'conv1','conv2','conv3','conv4','FC'};
+for i =1:5
     layer_name = layers{i};
     weight_name = strcat( '/', layer_name, '/', layer_name, '/',  'kernel:0');
     bias_name = strcat( '/', layer_name, '/', layer_name, '/',  'bias:0');

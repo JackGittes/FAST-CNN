@@ -1,17 +1,18 @@
 nn = FAST.ActiveSession('GPU');
 
-test_path = 'H:/PythonProject/BoatNet/new/new/test/';
-catg = {'boat','land','sea'};
-model = load('./Test/shipnet.mat');
+test_path = '/media/zhaomingxin/winF/PythonProject/BoatNet/train/';
+catg = {'boat','sea'};
+% model = load('./+ning/');
 
 Cores = 15;
 Cores = nn.Device.setCores(Cores);
 
-CLASS = 3;
+CLASS = 2;
 MAX_STEP = 1000;
 MAX_IM_NUM = 6284;
-INPUT_SIZE = [128,128];
+INPUT_SIZE = [32,32];
 EMA_ALPHA = 0.01;
+TOTAL_NUM = 12067+28496;
 
 names = cell(1,CLASS);
 for i = 1:CLASS
@@ -28,10 +29,11 @@ for i = 0:CLASS*MAX_IM_NUM-1
     imlist{i+1} = [catg{tmp_},'/',names{tmp_}{counter(tmp_)}];
 end
 
-lbs = repmat([1:CLASS]',[MAX_IM_NUM,1]);
+
+lbs = [ones(1,12067),2*ones(1,28496)];
 
 startpoint = 1;
-endpoint = MAX_IM_NUM*CLASS;
+endpoint = TOTAL_NUM;
 [subStart,subEnd] = FAST.op.divideDataset(Cores,startpoint,endpoint);
 counter = 0;
 spmd
@@ -45,21 +47,20 @@ spmd
             img = img(:,:,1:3);
         end
         input = imresize(img,INPUT_SIZE);
-        [res,stat] = ShipNet_test(nn,net,input);
-        
-%         current_ = findMaxMin(stat);
-%         if i == subStart{labindex}
-%             max_min_old = current_;
-%         else
-% %             max_min_old = EMA(max_min_old,current_,EMA_ALPHA);
-%             max_min_old = simpleMaxMin(max_min_old,current_);
-%         end
+        [res,stat] = ning.ning_ShipNet_baseline(nn,net,input);
         
         totNum = totNum +1;
         [~,idx] = max(res);
         if idx==lbs(i)
             corrt = corrt +1;
         end
+        
+        if i==subStart{labindex}
+            maxmin_old = findMaxMin(stat);
+        else
+            maxmin_new = simpleMaxMin(maxmin_old,findMaxMin(stat));
+        end
+        
         counter = counter +1;
         if counter~=0 && mod(counter,10)==0
             labBarrier;
