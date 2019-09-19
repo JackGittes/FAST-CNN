@@ -3,7 +3,7 @@
 % Description: Get device information and check status.
 % Device information is useful for users to check if their codes run normally.
 
-function getDeviceInfo(~)
+function res = getDeviceInfo(~)
     gpuInfo = getGPUInfo();
     cpuInfo = getCPUInfo();
     
