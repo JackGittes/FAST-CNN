@@ -31,7 +31,7 @@ function benchmark()
     fprintf('Total time on single core CPU:  %fs \n', res_single_core);
     fprintf('Total time on multicore CPU:  %fs \n', res_multi_core);
     if res_gpu > 0
-        fprintf('Total time on GPU:  %fs \n', res_single_core);
+        fprintf('Total time on GPU:  %fs \n', res_gpu);
     else
         fprintf('None GPU device available.\n');
     end
