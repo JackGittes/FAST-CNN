@@ -4,9 +4,14 @@
 % it will throw a warning and change mode to Default SingleMore.
 
 function setGPU(obj)
+    % Sometimes, the GPU query can incur a GPU memory overflow error when 
+    % there's already a GPU-based process running on the system.
 	try
-		gpuDevice(2);
-		obj.Mode = 'GPU';
+        if gpuDeviceCount > 0
+            obj.Mode = 'GPU';
+        else
+            obj.Mode = 'SingleCore';
+        end
 	catch
 		obj.Mode = 'SingleCore';
 		warning('Fail to get GPU device.');

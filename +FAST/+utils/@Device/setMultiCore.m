@@ -9,6 +9,7 @@
 % 2. Computation mode can't be set correctly in some occasions, fix them.
 
 function setMultiCore(obj)
+    % Check PCT status without opening a parpool repeatly.
 	cluster_available = length(gcp('nocreate'));
 	if cluster_available > 0
 		tmp_cluster_info = gcp('nocreate');
@@ -36,7 +37,7 @@ function setMultiCore(obj)
 	% on PCT otherwise MATLAB will throw an error. Only we need to do is 
 	% change the computation mode to MultiCore.
 	elseif pool_available > 0 && ~strcmp(obj.Mode, 'MultiCore')
-		warning('Parallel pool is already, reset the computation mode to multicore.');
+		warning('Parallel pool is already active, reset the computation mode to MultiCore.');
 		obj.NumCores = pool_available;
 		obj.Mode = 'MultiCore';
 	else
@@ -46,8 +47,4 @@ function setMultiCore(obj)
 		obj.NumCores = 1;
 		obj.Mode = 'SingleCore';
 	end
-end
-
-function res = getCurrentStatus()
-
 end
