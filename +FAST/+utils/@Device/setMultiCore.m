@@ -11,7 +11,8 @@
 function setMultiCore(obj)
 	cluster_available = length(gcp('nocreate'));
 	if cluster_available > 0
-		pool_available = cluster_available.NumWorkers;
+		tmp_cluster_info = gcp('nocreate');
+		pool_available = tmp_cluster_info.NumWorkers;
 	else
 		pool_available = 0;
 	end
