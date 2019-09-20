@@ -4,18 +4,23 @@
 % fails, it will throw a warning and set default mode SingleCore.
 % The function is private access.
 
-% Update: 2019/09/20: Some error found in this file, fix them.
+% Update: 2019/09/20: Some errors found in this file, fix them.
 % 1. Turn on multicore when parpool is already active will incur an error.
 % 2. Computation mode can't be set correctly in some occasions, fix them.
 
 function setMultiCore(obj)
-	pool_available = length(gcp('nocreate'));
+	cluster_available = length(gcp('nocreate'));
+	if cluster_available > 0
+		pool_available = cluster_available.NumWorkers;
+	else
+		pool_available = 0;
+	end
 	if strcmp(obj.Mode, 'MultiCore') && pool_available > 0
 		warning('Parallel pool and multicore mode is already on.');
 	% Check if there's a active parpool, if not, turn on PCT and set the computation
 	% mode.
 	elseif pool_available == 0 && ~strcmp(obj.Mode, 'MultiCore')
-		% Some errors maybe occur during open parpool, catch it and give a warning.
+		% Some errors maybe occur during opening parpool, catch it and give a warning.
 		try
 			p = parcluster('local');
 			obj.NumCores = p.NumWorkers;
