@@ -28,8 +28,8 @@ function subdir = compile_cuda()
            sub_file_name = [root_path, filesep, file_names{idx}];
            if strcmp(sub_file_name(end-3:end), '.cu') && isfile(sub_file_name)
                system('nvcc -cuda x.cu -keep');
-               cu_file{idx}.file_name = sub_file_name;
-               cu_file{idx}.file_name = 
+%                cu_file{idx}.file_name = sub_file_name;
+%                cu_file{idx}.file_name = 
            end
         end
     end

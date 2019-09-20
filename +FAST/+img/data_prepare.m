@@ -84,7 +84,7 @@ for i=1:1:43
 end
 bias=reshape([temp1;temp2],1,86);
 kernal_data=single(zeros(1,65536));
-(1,1:16384)=image;
+% (1,1:16384)=image;
 kernal_data(1,16385:20044)= weight;
 kernal_data(1,20481:20566)=bias;
 for i=1:1:20566
