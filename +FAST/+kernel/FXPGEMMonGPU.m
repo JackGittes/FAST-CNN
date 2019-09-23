@@ -23,7 +23,7 @@ function res = FXPGEMMonGPU(mat_a,mat_b)
     % Set OverFlow bounds and apply pre-set overflow action on GPU
     [a_int,b_int,WordLen,FracLen,~,~] = FAST.kernel.FiToInt(mat_a,mat_b,'int64');
 %     [up_bound,low_bound]=deal(2^(2*WordLen-1)-1,-2^(2*WordLen-1));
-    [up_bound,low_bound]=deal(2^31-1,-2^31);
+    [up_bound,low_bound]=deal(2^63-1,-2^63);
     
     if up_bound > 2^31-1 || low_bound < -2^31
         intfunc = str2func('int64');
@@ -57,8 +57,8 @@ function res = FXPGEMMonGPU(mat_a,mat_b)
     res_int = gather(res_gpu);
     
     % Re-quantization stage as described in DOC.
-%     tmp_ = bitshift(res_int(1:ah,1:bw),-FracLen);
-%     res = fi(double(tmp_)/2^(FracLen),mat_a.numerictype,mat_a.fimath);
+   % tmp_ = bitshift(res_int(1:ah,1:bw),-FracLen);
+   % res = fi(double(tmp_)/2^(FracLen),mat_a.numerictype,mat_a.fimath);
     
     res = fi(double(res_int(1:ah,1:bw))/2^(2*FracLen),mat_a.numerictype,mat_a.fimath);
 end
