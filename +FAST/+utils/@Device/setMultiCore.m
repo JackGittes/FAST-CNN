@@ -19,7 +19,7 @@ function setMultiCore(obj)
 	end
 	if strcmp(obj.Mode, 'MultiCore') && pool_available > 0
 		warning('Parallel pool and multicore mode is already on.');
-	% Check if there's a active parpool, if not, turn on PCT and set the computation
+	% Check if there's an active parpool, if not, turn on PCT and set the computation
 	% mode.
 	elseif pool_available == 0 && ~strcmp(obj.Mode, 'MultiCore')
 		% Some errors maybe occur during opening parpool, catch it and give a warning.
@@ -33,8 +33,8 @@ function setMultiCore(obj)
 			obj.NumCores = 1;
 			obj.Mode = 'SingleCore';
 		end
-	% Check if we are already turn on PCT, if so, there's no need to turn
-	% on PCT otherwise MATLAB will throw an error. Only we need to do is 
+	% Check if we already turned on PCT, if so, it's no need to turn
+	% on PCT again otherwise MATLAB will throw an error. Only we need to do is 
 	% change the computation mode to MultiCore.
 	elseif pool_available > 0 && ~strcmp(obj.Mode, 'MultiCore')
 		warning('Parallel pool is already active, reset the computation mode to MultiCore.');

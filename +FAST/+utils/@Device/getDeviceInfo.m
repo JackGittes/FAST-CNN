@@ -21,7 +21,7 @@ end
 function res = getGPUInfo()
     res = struct;
     if gpuDeviceCount>0
-        gd = gpuDevice(2);
+        gd = gpuDevice();
         res.name = gd.Name;
         res.num = gpuDeviceCount;
         res.status = 'Available';
