@@ -14,7 +14,6 @@
 function maxmin_old = full_test_gpu(test_path, params_path, t, f)
     % Create a "nn" object and set computation mode to GPU.
     nn = FAST.ActiveSession('GPU');
-    
     % Set accuracy report interval between every two results printed. If
     % you turn on 15 cores and REPORT_INTERVAL is 10, that means the test
     % process will print accuracy every 15*10=150 images.
@@ -22,12 +21,12 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
     
     if nargin < 4
         % Specify your test image path(full path, not relative path).
-        test_path = '/media/zhaomingxin/Document/Dataset/Ship_Data/ship_two/ship_for_two/train';
+        test_path = '/media/zhaomingxin/Document/Dataset/Ship_Data/ship_two/ship_for_two/test';
         self_path = mfilename('fullpath');
         model = load([self_path(1:end-length(mfilename)),...
                 filesep,'params_float.mat']);
         wordlen = 32;
-        fraclen = 22;
+        fraclen = 16;
         f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
         'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...
         'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
@@ -38,7 +37,7 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 15;
+    Cores = 1;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
@@ -54,16 +53,19 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
     % cores, for example, if total pic number is 2000 and your CPU have 4
     % cores, then it's better to test 500 pics per core. 
     [subStart,subEnd] = FAST.op.divideDataset(Cores,startpoint,endpoint);
-    counter = 0;
     spmd
         tic;
         % Set correct number and total number of tested images to 0 then start
         % the test process.
         corrt = 0;
         totNum = 0;
-        for i=subStart{labindex}:subEnd{labindex}
+        counter = 0;
+        for i=subStart{labindex}+6299:subEnd{labindex}
+            disp(i);
             img = imread(im_list{i});
             [~,~,d] = size(img);
+            % In case of RGBA images, we merely take RGB channels and leave
+            % out Alpha channel.
             if d~=3
                 img = img(:,:,1:3);
             end
@@ -72,13 +74,18 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
             [res,stat] = FAST.examples.baseline(nn, model, input, t, f);
 
             totNum = totNum +1;
-            [~,idx] = max(res);
+            [~,idx] = max(squeeze(res));
             if idx==lbs(i)
-                corrt = corrt+1;
+                corrt=corrt+1;
             end
+            
+            tmp_name = im_list{i};
+            disp([tmp_name(73:end-4),' lb: ',num2str(lbs(i)),' pred is:', num2str(idx)]);
+            disp(squeeze(res.data));
+            pause(0.1);
 
             % Calculate min/max info on different cores.
-            if i == subStart{labindex}
+            if i == subStart{labindex}+6299
                 maxmin_old = findMaxMin(stat);
             else
                 maxmin_old = simpleMaxMin(maxmin_old, findMaxMin(stat));

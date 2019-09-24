@@ -15,7 +15,7 @@
     preprocessing code has problems.
 %}
 
-function [res, stat] = full_test_non_multicore(test_path, params_path, t, f)
+function [res,stat] = full_test_non_multicore(test_path, params_path, t, f)
     % Create a "nn" object and set computation mode to GPU.
     nn = FAST.ActiveSession('GPU');
     
@@ -23,12 +23,12 @@ function [res, stat] = full_test_non_multicore(test_path, params_path, t, f)
     INPUT_SIZE = [32, 32];
     if nargin < 4
         % Specify your test image path.
-        test_path = '/media/zhaomingxin/Document/Dataset/Ship_Data/ship_two/ship_for_two/train';
+        test_path = '/media/zhaomingxin/Document/Dataset/Ship_Data/ship_two/ship_for_two/test';
         self_path = mfilename('fullpath');
         model = load([self_path(1:end-length(mfilename)),...
                 filesep,'params_float.mat']);
         wordlen = 32;
-        fraclen = 22;
+        fraclen = 16;
         f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
         'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...
         'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
@@ -51,9 +51,9 @@ function [res, stat] = full_test_non_multicore(test_path, params_path, t, f)
         [res,stat] = FAST.examples.baseline(nn, model, input, t, f);
         
         totNum = totNum +1;
-        [~,idx] = max(res);
-        if idx==lbs(idx)
-           corrt = corrt+1;
+        [~,idx] = max(squeeze(res));
+        if idx==lbs(i)
+           corrt=corrt+1;
         end
         if mod(i, REPORT_INTERVAL) == 0
            fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f %%\n',toc,totNum,corrt,corrt/totNum*100.0);

@@ -19,7 +19,7 @@ t = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
 
 % Specify core number to run test procedure, NOTE: it's better to set Cores
 % to be equal to your hardware core number.
-Cores = 1;
+Cores = 5;
 Cores = nn.Device.setCores(Cores);
 
 % Some necessary dataset info should be given here to load the dataset.
@@ -42,7 +42,7 @@ spmd
     corrt = 0;
     totNum = 0;
     counter = 0;
-    for i=subStart{labindex}+6299:subEnd{labindex}
+    for i=subStart{labindex}:subEnd{labindex}
         disp(i);
         img = imread(im_list{i});
         [~,~,d] = size(img);
@@ -67,11 +67,11 @@ spmd
         pause(0.1);
 
         % Calculate min/max info on different cores.
-        if i == subStart{labindex}+6299
-            maxmin_old = findMaxMin(stat);
-        else
-            maxmin_old = simpleMaxMin(maxmin_old, findMaxMin(stat));
-        end
+%         if i == subStart{labindex}
+%             maxmin_old = findMaxMin(stat);
+%         else
+%             maxmin_old = simpleMaxMin(maxmin_old, findMaxMin(stat));
+%         end
 
         counter=counter+1;
         if counter~=0 && mod(counter,REPORT_INTERVAL) == 0
