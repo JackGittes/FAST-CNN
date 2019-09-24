@@ -31,7 +31,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 5;
+    Cores = 15;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
