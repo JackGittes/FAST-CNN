@@ -11,7 +11,7 @@
         maxmin_old: statistic result of intermediate feature map
 %}
 
-function maxmin_old = full_test_gpu(test_path, params_path, t, f)
+function maxmin_old = full_test_gpu(test_path, params_path)
     % Create a "nn" object and set computation mode to GPU.
     nn = FAST.ActiveSession('GPU');
     % Set accuracy report interval between every two results printed. If
@@ -25,19 +25,13 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
         self_path = mfilename('fullpath');
         model = load([self_path(1:end-length(mfilename)),...
                 filesep,'params_float.mat']);
-        wordlen = 32;
-        fraclen = 16;
-        f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
-        'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...
-        'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
-        t = numerictype('WordLength', wordlen, 'FractionLength',fraclen); 
     else
         model = load(params_path);
     end
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 1;
+    Cores = 5;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
@@ -60,8 +54,7 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
         corrt = 0;
         totNum = 0;
         counter = 0;
-        for i=subStart{labindex}+6299:subEnd{labindex}
-            disp(i);
+        for i=subStart{labindex}:subEnd{labindex}
             img = imread(im_list{i});
             [~,~,d] = size(img);
             % In case of RGBA images, we merely take RGB channels and leave
@@ -71,21 +64,16 @@ function maxmin_old = full_test_gpu(test_path, params_path, t, f)
             end
             input = imresize(img,INPUT_SIZE);
             % Call your CNN function here to apply forward once.
-            [res,stat] = FAST.examples.baseline(nn, model, input, t, f);
+            [res,stat] = FAST.examples.baseline(nn, model, input);
 
             totNum = totNum +1;
             [~,idx] = max(squeeze(res));
             if idx==lbs(i)
                 corrt=corrt+1;
             end
-            
-            tmp_name = im_list{i};
-            disp([tmp_name(73:end-4),' lb: ',num2str(lbs(i)),' pred is:', num2str(idx)]);
-            disp(squeeze(res.data));
-            pause(0.1);
 
             % Calculate min/max info on different cores.
-            if i == subStart{labindex}+6299
+            if i == subStart{labindex}
                 maxmin_old = findMaxMin(stat);
             else
                 maxmin_old = simpleMaxMin(maxmin_old, findMaxMin(stat));

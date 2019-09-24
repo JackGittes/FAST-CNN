@@ -2,11 +2,17 @@
 % Date: 2019/09/23
 % Description: Network definition.
 
-function [res,stat] = baseline(nn,model,input,t,f)
+function [res,stat] = baseline(nn,model,input)
     tensor_order = [4,3,2,1];
- 
+    wordlen = 32;
+    fraclen = 16;
+    f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
+    'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...
+    'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
+    t = numerictype('WordLength', wordlen, 'FractionLength',fraclen);
+    
     stat = cell(1,12);
-    input = fi((double(input)/255-0.5)/0.5,t,f);
+    input = fi((single(input)/255-0.5)/0.5,t,f);
     stat{1}=input.data;
     conv1 = nn.Conv2d(input,permute(fi(model(1).net_0,t,f),tensor_order),t,f,[2,2],'SAME');
     stat{2}=conv1.data;

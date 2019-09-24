@@ -15,7 +15,7 @@
     preprocessing code has problems.
 %}
 
-function [res,stat] = full_test_non_multicore(test_path, params_path, t, f)
+function [res,stat] = full_test_non_multicore(test_path, params_path)
     % Create a "nn" object and set computation mode to GPU.
     nn = FAST.ActiveSession('GPU');
     
@@ -27,12 +27,6 @@ function [res,stat] = full_test_non_multicore(test_path, params_path, t, f)
         self_path = mfilename('fullpath');
         model = load([self_path(1:end-length(mfilename)),...
                 filesep,'params_float.mat']);
-        wordlen = 32;
-        fraclen = 16;
-        f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
-        'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength',wordlen, ...
-        'ProductFractionLength',fraclen, 'SumWordLength', wordlen, 'SumFractionLength', fraclen);
-        t = numerictype('WordLength', wordlen, 'FractionLength',fraclen); 
     else
         model = load(params_path);
     end
@@ -40,6 +34,7 @@ function [res,stat] = full_test_non_multicore(test_path, params_path, t, f)
     corrt = 0;
     totNum = 0;
     tic;
+    
     for i = 1:TOTAL_NUM
         img = imread(im_list{i});
         [~,~,d] = size(img);
@@ -48,7 +43,7 @@ function [res,stat] = full_test_non_multicore(test_path, params_path, t, f)
         end
         input = imresize(img,INPUT_SIZE);
         % Call your CNN function here to apply forward once.
-        [res,stat] = FAST.examples.baseline(nn, model, input, t, f);
+        [res,stat] = FAST.examples.baseline(nn, model, input);
         
         totNum = totNum +1;
         [~,idx] = max(squeeze(res));

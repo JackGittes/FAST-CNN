@@ -13,7 +13,7 @@
 % So there's still a large margin to improve its performance.
 
 function res = FXPGEMMonGPU(mat_a,mat_b)
-    assert(isfi(mat_a)&&isfi(mat_b),"GPU Fixed point GEMM only support fi object for now.");
+    assert(isfi(mat_a)&&isfi(mat_b),"GPU Fixed point GEMM only supports fi object for now.");
     
     [ah,aw]=size(mat_a);
     [bh,bw]=size(mat_b);
@@ -21,7 +21,7 @@ function res = FXPGEMMonGPU(mat_a,mat_b)
     assert(aw==bh,"Inner Dimension Must Match.");
     
     % Set OverFlow bounds and apply pre-set overflow action on GPU
-    [a_int,b_int,WordLen,FracLen,~,~] = FAST.kernel.FiToInt(mat_a,mat_b,'int64');
+    [a_int,b_int,WordLen,FracLen,~,~] = FAST.kernel.FiToInt(mat_a,mat_b,'int32');
 %     [up_bound,low_bound]=deal(2^(2*WordLen-1)-1,-2^(2*WordLen-1));
     [up_bound,low_bound]=deal(2^63-1,-2^63);
     
@@ -57,8 +57,8 @@ function res = FXPGEMMonGPU(mat_a,mat_b)
     res_int = gather(res_gpu);
     
     % Re-quantization stage as described in DOC.
-   % tmp_ = bitshift(res_int(1:ah,1:bw),-FracLen);
-   % res = fi(double(tmp_)/2^(FracLen),mat_a.numerictype,mat_a.fimath);
+    tmp_ = bitshift(res_int(1:ah,1:bw),-FracLen);
+    res = fi(double(tmp_)/2^(FracLen),mat_a.numerictype,mat_a.fimath);
     
-    res = fi(double(res_int(1:ah,1:bw))/2^(2*FracLen),mat_a.numerictype,mat_a.fimath);
+%    res = fi(double(res_int(1:ah,1:bw))/2^(2*FracLen),mat_a.numerictype,mat_a.fimath);
 end
