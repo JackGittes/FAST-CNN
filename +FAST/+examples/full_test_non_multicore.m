@@ -20,7 +20,7 @@ function [res,stat] = full_test_non_multicore(test_path, params_path)
     
     REPORT_INTERVAL = 50;
     INPUT_SIZE = [32, 32];
-    if nargin < 4
+    if nargin < 2
         % Specify your test image path.
         test_path = '/home/zhaomingxin/Datasets/new_for_two/train';
         self_path = mfilename('fullpath');
