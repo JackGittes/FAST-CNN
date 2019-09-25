@@ -19,7 +19,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
     % process will print accuracy every 15*10=150 images.
     REPORT_INTERVAL = 10;
     
-    if nargin < 4
+    if nargin < 2
         % Specify your test image path(full path, not relative path).
         test_path = '/home/zhaomingxin/Datasets/new_for_two/train';
         self_path = mfilename('fullpath');
@@ -31,7 +31,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 36;
+    Cores = 15;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
