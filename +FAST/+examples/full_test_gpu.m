@@ -5,13 +5,12 @@
 %{
     Args:
         test_path: test dataset full path
-        t: fixed point number type
-        f: fimath type
+        params_path: path to load CNN parameters.
     Returns:
-        maxmin_old: statistic result of intermediate feature map
+        maxmin_res: statistic result of intermediate feature map
 %}
 
-function maxmin_old = full_test_gpu(test_path, params_path)
+function maxmin_res = full_test_gpu(test_path, params_path)
     % Create a "nn" object and set computation mode to GPU.
     nn = FAST.ActiveSession('GPU');
     % Set accuracy report interval between every two results printed. If
@@ -74,9 +73,9 @@ function maxmin_old = full_test_gpu(test_path, params_path)
 
             % Calculate min/max info on different cores.
             if i == subStart{labindex}
-                maxmin_old = findMaxMin(stat);
+                maxmin_res = findMaxMin(stat);
             else
-                maxmin_old = simpleMaxMin(maxmin_old, findMaxMin(stat));
+                maxmin_res = simpleMaxMin(maxmin_res, findMaxMin(stat));
             end
 
             counter=counter+1;

@@ -3,7 +3,7 @@
 % Description: as below
 %{
     Args: 
-        a\b: fi object need to be converted to INT type.
+        a/b: fi object need to be converted to INT type.
         type: specific output format, no default value.
     Return:
     Error: 

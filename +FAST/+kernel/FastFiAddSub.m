@@ -6,7 +6,7 @@
 
 %{
     Args:
-        Input numbers\vectors\matrixs to apply elementwise addition or substraction.
+        Input numbers/vectors/matrixs to apply elementwise addition or substraction.
         Op: addition or substraction
     Return:
         Result of a +(-)b, the result format is same as a/b(fi object).

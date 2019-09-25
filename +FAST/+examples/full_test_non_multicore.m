@@ -4,8 +4,7 @@
 %{
     Args:
         test_path: test dataset full path
-        t: fixed point number type
-        f: fimath type
+        params_path: path to load CNN parameters.
     Returns:
         omitted.
     NOTE: MultiCore and GPU computation mode both are hard to debug when the
