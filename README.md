@@ -43,18 +43,24 @@ Several fundamental functions have been completed and carried on in a parallel w
 
 ### Requirement
 
-All codes are tested in **MATLAB R2017b** and don't support GPU acceleration, which means you should only run it on small dataset otherwise the runtime will be quite scaring. As I say above, this library is designed for simulating FP-CNN and it's also an experimental research which helps us understand FP behaviors of deep neural networks. Furthermore, it can help people who want to deploy their CNN algorithms on FP devices (FPGA/ASIC etc) to verify the effectiveness of quantization method.
+All codes tested in **MATLAB R2017/18b and 2019a** on GTX 1050Ti/1080/1080Ti and RTX 2080Ti/2060. As I say above, this library is designed for simulating FXP-CNN and it's also an experimental research which helps us understand FXP behaviors of deep neural networks. Furthermore, it can help people who want to deploy their CNN algorithms on FXP devices (FPGA/ASIC etc) to verify the effectiveness of quantization method.
 
 ### GPU Support
 
-- Although the MATLAB library can implement a simple FP-CNN for now, there are still many problems in this code. I will fix these problems in the future.
-
-- To enhance the library's robustness and compatibility, an elaborate and overall unit test module is under construsting which will check more complicated conditions in application scenarios.
-
-- I try my best to design every function to be similar to TensorFlow-style as possible so that people who are familiar with TensorFlow can easily tranfer to this library without much learning effort.
-
-- I'm considering to use GPU to accelerate fixed pointed simulation in the future and the basic idea is shown as below. 
+GPU support is described as below, as for different hardware design, the GPU support is not a general implementation.
 
 <center>
 <img src="http://wx4.sinaimg.cn/large/41f56ddcly1fxsgd1cqqxj26fx1jtqv5.jpg" width="900px">
 </center>
+
+### TODO
+
+More features will be added into FAST-CNN, including:
+
+- Construct computation graph and execute forward process automatically.
+  - User defines basic graph structure
+  - Make graph and optimize the executation order
+  - Initialize Graph with given parameters
+  - Execute computation graph and report intermediate results for analyzing
+- Support batch input mode as a suppplement to single image input mode which is the current implementation.
+- Add backward function.
