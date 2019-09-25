@@ -21,7 +21,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
     
     if nargin < 4
         % Specify your test image path(full path, not relative path).
-        test_path = '/media/zhaomingxin/Document/Dataset/Ship_Data/ship_two/ship_for_two/test';
+        test_path = '/home/zhaomingxin/Datasets/new_for_two/train';
         self_path = mfilename('fullpath');
         model = load([self_path(1:end-length(mfilename)),...
                 filesep,'params_float.mat']);
@@ -31,7 +31,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 15;
+    Cores = 36;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
@@ -90,7 +90,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
                 r = gop(@plus,[totNum,corrt],1);
                 time_lab1 = toc;
                 if labindex == 1
-                    fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f \n',time_lab1,r(1),r(2),r(2)/r(1)*100.0);
+                    fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f %%\n',time_lab1,r(1),r(2),r(2)/r(1)*100.0);
                 end
             end
         end
@@ -100,7 +100,7 @@ function maxmin_old = full_test_gpu(test_path, params_path)
         r = gop(@plus,[totNum,corrt],1);
         time_lab1 = toc;
         if labindex == 1
-            fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f \n',time_lab1,r(1),r(2),r(2)/r(1)*100.0);
+            fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f %%\n',time_lab1,r(1),r(2),r(2)/r(1)*100.0);
         end
     end
 end

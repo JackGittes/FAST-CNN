@@ -23,7 +23,7 @@ function [res,stat] = full_test_non_multicore(test_path, params_path)
     INPUT_SIZE = [32, 32];
     if nargin < 4
         % Specify your test image path.
-        test_path = '/media/zhaomingxin/Document/Dataset/Ship_Data/ship_two/ship_for_two/test';
+        test_path = '/home/zhaomingxin/Datasets/new_for_two/train';
         self_path = mfilename('fullpath');
         model = load([self_path(1:end-length(mfilename)),...
                 filesep,'params_float.mat']);
