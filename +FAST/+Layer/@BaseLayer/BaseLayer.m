@@ -27,9 +27,9 @@ classdef BaseLayer < handle
         function set.DebugLevel(obj, level)
             switch level
                 case 1
-                    disp('Set debug level 1, no result will be collected.');
+            %        disp('Set debug level 1, no result will be collected.');
                 case 2
-                    disp('Set debug level 2, intermediate results will be recorded.');
+            %        disp('Set debug level 2, intermediate results will be recorded.');
                 otherwise
                     error('Unknown debug level.');
             end
