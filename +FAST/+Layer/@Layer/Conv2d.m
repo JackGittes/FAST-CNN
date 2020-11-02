@@ -25,8 +25,8 @@ function res = Conv2dTensor(obj,im,ker,im_d,k_out,channel_size,out_size,window_s
     tmp1 = FAST.op.GetElemPos(im_d,channel_size,out_size,window_shape,stride);
     
 %   Reshape kernel and input feature map into im2col matrix
-    ker_mat = reshape(ker,[im_d*prod(window_shape),k_out]);  
-    im_mat =  reshape(permute(im(tmp1),[2,1,3]),[prod(out_size),prod(window_shape)*im_d]); 
+    ker_mat = reshape(ker,[im_d*prod(window_shape),k_out]);
+    im_mat =  reshape(permute(im(tmp1),[2,1,3]),[prod(out_size),prod(window_shape)*im_d]);
     
 %   Calculate Conv2d result by GEMM (GEneral Matrix Multiplication)
     switch obj.Mode
