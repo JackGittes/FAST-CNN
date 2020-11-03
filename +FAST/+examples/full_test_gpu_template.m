@@ -20,7 +20,7 @@ function maxmin_res = full_test_gpu_template(test_path, params_path)
     
     if nargin < 4
         % Specify your test image path(full path, not relative path).
-        test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\Ship_Four_CLS\test';
+        test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\ShipMini\test';
         self_path = mfilename('fullpath');
         tmp = load([self_path(1:end-length(mfilename)),...
               filesep,'quantized.mat']);
@@ -29,10 +29,11 @@ function maxmin_res = full_test_gpu_template(test_path, params_path)
         tmp = load(params_path);
 		model = tmp.Net;
     end
+	model = FAST.utils.ConvertFXP(model);
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 4;
+    Cores = 8;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.

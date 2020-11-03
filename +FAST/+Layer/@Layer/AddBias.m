@@ -4,6 +4,12 @@
 
 function res = AddBias(~,im,bias,t,f)
     [im_h,im_w,im_d]=size(im); 
-    tmp = reshape(repmat(bias,[im_h*im_w,1]),[im_h,im_w,im_d]);
+    [c, ~] = size(bias);
+    if c > 1
+        tmp_bias = bias';
+    else
+        tmp_bias = bias;
+    end
+    tmp = reshape(repmat(tmp_bias,[im_h*im_w,1]),[im_h,im_w,im_d]);
     res = im + tmp;
 end

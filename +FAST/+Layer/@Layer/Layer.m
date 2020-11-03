@@ -1,4 +1,4 @@
-% Auto Generated in 2020-11-02 19:19:53 By MATLAB 2018b
+% Auto Generated in 2020-11-04 00:01:42 By MATLAB 2018b
 % Author: Zhao Mingxin
 classdef Layer < FAST.Layer.BaseLayer
 	 methods
@@ -11,5 +11,6 @@ classdef Layer < FAST.Layer.BaseLayer
 		[Out1]=Pooling(obj,Arg1,Arg2,Arg3,Arg4,Arg5,Arg6,Arg7);
 		[Out1]=ReLU(obj,Arg1);
 		[Out1]=ReLU6(obj,Arg1);
+		[Out1]=ZeroPad2d(obj,Arg1,Arg2);
 	 end
 end

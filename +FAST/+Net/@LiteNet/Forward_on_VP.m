@@ -9,7 +9,7 @@
         Network result of the last layer.
     Error:
         No error is directly defined in this function.
-    NOTE：
+    NOTE:?
         A more compact style Forward function maybe realized by recursively
         invoking itself but doing this may also lead to observe intermediate 
         result between layers toughly.

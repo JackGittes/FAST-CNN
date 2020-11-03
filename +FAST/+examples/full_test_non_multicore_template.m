@@ -22,7 +22,7 @@ function [res,stat] = full_test_non_multicore_template(test_path, params_path)
     INPUT_SIZE = [32, 32];
     if nargin < 4
         % Specify your test image path(full path, not relative path).
-        test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\Ship_Four_CLS\test';
+        test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\ShipMini\test';
         self_path = mfilename('fullpath');
         tmp = load([self_path(1:end-length(mfilename)),...
               filesep,'quantized.mat']);
