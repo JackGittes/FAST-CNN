@@ -1,4 +1,4 @@
-% Auto Generated in 2020-11-04 00:01:42 By MATLAB 2018b
+% Auto Generated in 2020-11-09 15:41:04 By MATLAB 2018b
 % Author: Zhao Mingxin
 classdef LiteNet < FAST.Net.Net
 	 methods

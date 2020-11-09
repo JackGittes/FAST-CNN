@@ -10,7 +10,7 @@
         maxmin_res: statistic result of intermediate feature map
 %}
 
-function maxmin_res = full_test_gpu_template(test_path, params_path)
+function full_test_gpu_template(test_path, params_path)
     % Create a "nn" object and set computation mode to GPU.
     nn = FAST.ActiveSession('GPU');
     % Set accuracy report interval between every two results printed. If
@@ -20,7 +20,7 @@ function maxmin_res = full_test_gpu_template(test_path, params_path)
     
     if nargin < 4
         % Specify your test image path(full path, not relative path).
-        test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\ShipMini\test';
+        test_path = 'H:\Dataset\ImageNet\ILSVRC_2012\val';
         self_path = mfilename('fullpath');
         tmp = load([self_path(1:end-length(mfilename)),...
               filesep,'quantized.mat']);
@@ -37,8 +37,7 @@ function maxmin_res = full_test_gpu_template(test_path, params_path)
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
-    INPUT_SIZE = [32,32];
-
+    
     % Create image name list from given dataset folder for reading images
     [TOTAL_NUM,im_list,lbs] = FAST.img.getImageListAndLabels(test_path);
 
@@ -57,28 +56,26 @@ function maxmin_res = full_test_gpu_template(test_path, params_path)
         totNum = 0;
         counter = 0;
         for i=subStart{labindex}:subEnd{labindex}
-            img = imread(im_list{i});
-            [~,~,d] = size(img);
-            % In case of RGBA images, we merely take RGB channels and leave
-            % out Alpha channel.
-            if d~=3
-                img = img(:,:,1:3);
-            end
-            input = imresize(img,INPUT_SIZE);
-            % Call your CNN function here to apply forward once.
-            [res,stat] = FAST.examples.template(nn, model, input);
+            try
+                img = imread(im_list{i});
+                [~,~,d] = size(img);
+                % In case of RGBA images, we merely take RGB channels and leave
+                % out Alpha channel.
+                if d~=3
+                    img = img(:,:,1:3);
+                end
+                input = FAST.img.CropToShape(img, [224, 224]);
+                % Call your CNN function here to apply forward once.
+                [res,~] = FAST.examples.template(nn, model, input);
 
-            totNum = totNum +1;
-            [~,idx] = max(squeeze(res));
+                totNum = totNum +1;
+                [~,idx] = max(squeeze(res));
+            catch
+                idx = 0;
+            end
+            
             if idx==lbs(i)
                 corrt=corrt+1;
-            end
-
-            % Calculate min/max info on different cores.
-            if i == subStart{labindex}
-                maxmin_res = findMaxMin(stat);
-            else
-                maxmin_res = simpleMaxMin(maxmin_res, findMaxMin(stat));
             end
 
             counter=counter+1;
@@ -104,23 +101,5 @@ function maxmin_res = full_test_gpu_template(test_path, params_path)
         if labindex == 1
             fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f %%\n',time_lab1,r(1),r(2),r(2)/r(1)*100.0);
         end
-    end
-end
-
-function res = findMaxMin(stat)
-    NUM = length(stat);
-    res = cell(1,NUM);
-    for i = 1:NUM
-        data = stat{i};
-        res{i} = [min(data(:)),max(data(:))];
-    end
-end
-
-function res = simpleMaxMin(x_old, x_new)
-    NUM = length(x_old);
-    res = cell(1,NUM);
-    for i =1:NUM
-        res{i}(1) = min(x_old{i}(1),x_new{i}(1));
-        res{i}(2) = max(x_old{i}(2),x_new{i}(2));
     end
 end

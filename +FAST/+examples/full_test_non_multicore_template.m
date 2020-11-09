@@ -22,7 +22,8 @@ function [res,stat] = full_test_non_multicore_template(test_path, params_path)
     INPUT_SIZE = [32, 32];
     if nargin < 4
         % Specify your test image path(full path, not relative path).
-        test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\ShipMini\test';
+%         test_path = 'H:\Dataset\Ship_Data\Ship_Four_CLS\ShipMini\test';
+        test_path = 'H:\Dataset\ImageNet\ILSVRC_2012\val';
         self_path = mfilename('fullpath');
         tmp = load([self_path(1:end-length(mfilename)),...
               filesep,'quantized.mat']);
@@ -39,17 +40,23 @@ function [res,stat] = full_test_non_multicore_template(test_path, params_path)
     tic;
     
     for i = 1:TOTAL_NUM
-        img = imread(im_list{i});
-        [~,~,d] = size(img);
-        if d~=3
-           img = img(:,:,1:3);
-        end
-        input = imresize(img,INPUT_SIZE);
-        % Call your CNN function here to apply forward once.
-        [res,stat] = FAST.examples.template(nn, model, input);
+        try
+            img = imread(im_list{i});
+            [~,~,d] = size(img);
+            if d~=3
+               img = img(:,:,1:3);
+            end
+            input = FAST.img.CropToShape(img, [224, 224]);
         
+%         input = imresize(img,INPUT_SIZE);
+        % Call your CNN function here to apply forward once.
+            [res,stat] = FAST.examples.template(nn, model, input);
+            [~,idx] = max(squeeze(res));
+        catch
+            idx = 0;
+        end
+        disp([num2str(idx), '  ', num2str(lbs(i))])
         totNum = totNum +1;
-        [~,idx] = max(squeeze(res));
         if idx==lbs(i)
            corrt=corrt+1;
         end

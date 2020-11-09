@@ -1,7 +1,8 @@
-% Auto Generated in 2020-11-04 00:01:42 By MATLAB 2018b
+% Auto Generated in 2020-11-09 15:41:04 By MATLAB 2018b
 % Author: Zhao Mingxin
 classdef Layer < FAST.Layer.BaseLayer
 	 methods
+		[Out1]=Add(obj,Arg1,Arg2,Arg3,Arg4,Arg5,Arg6);
 		[Out1]=AddBias(obj,Arg1,Arg2,Arg3,Arg4);
 		[Out1]=Conv2d(obj,Arg1,Arg2,Arg3,Arg4,Arg5,Arg6);
 		[Out1]=DepthwiseConv2d(obj,Arg1,Arg2,Arg3,Arg4,Arg5,Arg6);
