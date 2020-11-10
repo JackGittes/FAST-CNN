@@ -384,9 +384,9 @@ function res = cast_int(im, mul, sft)
 %    im(im < -32768) = -32768;
 %    im(im > 32767) = 32767;
 %-------------------- Comment end. ----------------------
-    im = im * mul;
-    im = bitshift(im, -sft);
-    im(im > 127) = 127;
-    im(im < -128) = -128;
-    res = im;
+%     im = im * mul;
+% %     im = bitshift(im, -sft);
+%     im = im / (2^sft);
+    res = FAST.kernel.RoundCastKernel(im,mul,sft,8);
+%     res = im;
 end

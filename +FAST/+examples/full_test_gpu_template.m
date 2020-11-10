@@ -33,7 +33,7 @@ function full_test_gpu_template(test_path, params_path)
 
     % Specify core number to run test procedure, NOTE: it's better to set Cores
     % to be equal to your hardware core number.
-    Cores = 8;
+    Cores = 10;
     Cores = nn.Device.setCores(Cores);
 
     % Some necessary dataset info should be given here to load the dataset.
