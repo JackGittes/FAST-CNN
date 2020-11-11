@@ -7,7 +7,6 @@ classdef Net < handle
         model;
         inputs;
         nn;
-        strategy_list;
     end
     
     properties(SetAccess = private)
@@ -41,8 +40,5 @@ classdef Net < handle
             obj.nn.Device.setMode('GPU');
             obj.nn.Device.getDeviceInfo();
         end
-        
-        res = getStrategy(obj,config);
-        res = StrategyExecutor(obj,stgy,input);
     end
 end

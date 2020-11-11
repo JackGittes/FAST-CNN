@@ -11,10 +11,8 @@ function [totNum,sp1,sp5] = runOnDataset(imStart,imEnd,net,lbs,impath,Loader,Log
             fprintf('Image Read Failure in :%d\n',idx);
             continue;
         end
-%         img = FAST.img.SingleImageCrop(img,224);
-%         img = FAST.img.PadLeftRight(img);
+
         img = FAST.img.CropToShape(img,[224,256]);
-        
         [p1,p5] = FAST.Net.runNetOnce(net,img,imlb+2);
         
         [sp1,sp5] = deal(sp1+p1,sp5+p5);
