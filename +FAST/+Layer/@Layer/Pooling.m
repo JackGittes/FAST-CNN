@@ -50,5 +50,6 @@ function res = LiteAVG(x)
     [num,~] = size(x);
     mul = floor(2^17/num);
     shift = 17;
-    res = bitshift(sum(x)*mul,-shift);
+%     res = bitshift(sum(x)*mul,-shift);
+    res = FAST.kernel.RoundCastKernel(sum(x), mul, shift, 8);
 end

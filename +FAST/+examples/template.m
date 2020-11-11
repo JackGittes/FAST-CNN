@@ -12,7 +12,7 @@
 % Date: 2020-11-07
 
 function [im, stat] = template(nn, net, im)
-    f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'round', ... 
+    f = fimath('CastBeforeSum',0, 'OverflowMode', 'Saturate', 'RoundMode', 'floor', ... 
     'ProductMode', 'SpecifyPrecision', 'SumMode', 'SpecifyPrecision', 'ProductWordLength', 32, ... 
      'ProductFractionLength', 0, 'SumWordLength', 32, 'SumFractionLength', 0); 
     t = numerictype('WordLength', 32, 'FractionLength', 0); 
@@ -370,7 +370,7 @@ function [im, stat] = template(nn, net, im)
     im = cast_int(im, net{62}.Mul, net{62}.Shift);
     im = nn.ReLU(im);
     
-    im = nn.Pooling(im, t, f, [7, 7], 'AVG', [7, 7], 'VALID');
+    im = nn.Pooling(im, t, f, [7, 7], 'LiteAVG', [7, 7], 'VALID');
 % --- Layer: root.classifier.1.0
     im = nn.PointwiseConv2d(im, net{63}.Weight, t, f);
     im = nn.AddBias(im, net{63}.Bias, t, f);
@@ -381,12 +381,10 @@ end
 
 function res = cast_int(im, mul, sft) 
 %------ Uncomment to use intermediate results cast.------
-%    im(im < -32768) = -32768;
-%    im(im > 32767) = 32767;
+   im(im < -32768) = -32768;
+   im(im > 32767) = 32767;
 %-------------------- Comment end. ----------------------
-%     im = im * mul;
-% %     im = bitshift(im, -sft);
-%     im = im / (2^sft);
+
     res = FAST.kernel.RoundCastKernel(im,mul,sft,8);
 %     res = im;
 end

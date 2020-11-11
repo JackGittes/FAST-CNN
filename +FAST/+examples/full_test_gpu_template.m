@@ -55,6 +55,8 @@ function full_test_gpu_template(test_path, params_path)
         corrt = 0;
         totNum = 0;
         counter = 0;
+        acc1 = 0;
+        acc5 = 0;
         for i=subStart{labindex}:subEnd{labindex}
             try
                 img = imread(im_list{i});
@@ -69,13 +71,12 @@ function full_test_gpu_template(test_path, params_path)
                 [res,~] = FAST.examples.template(nn, model, input);
 
                 totNum = totNum +1;
-                [~,idx] = max(squeeze(res));
+                
+                [p1,p5]=FAST.op.checkTopPred(res,lbs(i));
+                acc1 = acc1 + p1;
+                acc5 = acc5 + p5;
             catch
-                idx = 0;
-            end
-            
-            if idx==lbs(i)
-                corrt=corrt+1;
+%                 idx = 0;
             end
 
             counter=counter+1;
@@ -86,10 +87,11 @@ function full_test_gpu_template(test_path, params_path)
                 % global operation(gop function), which may lead to test process
                 % crash.
                 labBarrier;
-                r = gop(@plus,[totNum,corrt],1);
+                r = gop(@plus,[totNum,acc1,acc5],1);
                 time_lab1 = toc;
                 if labindex == 1
-                    fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-Top: %3.2f %%\n',time_lab1,r(1),r(2),r(2)/r(1)*100.0);
+                    fprintf('Time: %6.2f, Total: %5d, Correct: %5d ,Acc-1: %3.2f%% Acc-5: %3.2f%%\n',...
+                        time_lab1,r(1),r(2),r(2)/r(1)*100.0,r(3)/r(1)*100.0);
                 end
             end
         end

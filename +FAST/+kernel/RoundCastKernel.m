@@ -1,6 +1,12 @@
+%{
+    Author:  Zhao Mingxin
+    Date:  2020/11/10
+    Description: Matlab interface for calling RoundCast.cu.
+%}
 function res=RoundCastKernel(im, mul, shift, bit_width)
     [h,w,d] = size(im);
-    blk_size = 16;
+    blk_size = 16; % Recommended block size = 16
+    
     gpu_kernel=parallel.gpu.CUDAKernel('+FAST/+cuda/Arithmetic/RoundCast.ptx',...
         '+FAST/+cuda/Arithmetic/RoundCast.cu');
     gpu_kernel.GridSize=[ceil(h/blk_size),ceil(w/blk_size),d];
