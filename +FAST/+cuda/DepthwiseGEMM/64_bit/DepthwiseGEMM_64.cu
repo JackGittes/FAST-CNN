@@ -10,7 +10,9 @@
 *	feedback.
 *	Homepage:	https://jackgittes.github.io
 *********************************************************/
-__global__ void DepthwiseGEMM_64(const long long *A,const long long *B,const int Aheight,const int Awidth,const int Bwidth, const long long up_bound,const long long low_bound,long long *C)
+__global__ void DepthwiseGEMM_64(const long long *A,const long long *B,
+        const int Aheight,const int Awidth,const int Bwidth, 
+                const long long up_bound,const long long low_bound,long long *C)
 {
 	long long Cvalue = 0;
 	long long prod_tmp;

@@ -21,6 +21,7 @@ function full_test_gpu_template(test_path, params_path)
     if nargin < 4
         % Specify your test image path(full path, not relative path).
         test_path = 'H:\Dataset\ImageNet\ILSVRC_2012\val';
+        test_path = '/media/zhaomingxin/Document1/Dataset/ImageNet/ILSVRC_2012/val';
         self_path = mfilename('fullpath');
         tmp = load([self_path(1:end-length(mfilename)),...
               filesep,'quantized.mat']);
