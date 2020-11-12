@@ -27,7 +27,7 @@ function [total_num, imlist, lbs] = getImageListAndLabels(test_path)
     % Get subfolders under test folder which should have sub-category that 
     % that contains input images.
     for i=1:length(cls_names)
-        if isfolder([test_path, filesep, cls_names{i}]) && ...
+        if exist([test_path, filesep, cls_names{i}]) && ...  % Compatibility: 2017a has no isfolder func, use exist instead.
                 ~strcmp(cls_names{i}, '.') && ~strcmp(cls_names{i}, '..')
             sub_cls{tmp_cls_counter}=cls_names{i};
             tmp_cls_counter = tmp_cls_counter+1;
