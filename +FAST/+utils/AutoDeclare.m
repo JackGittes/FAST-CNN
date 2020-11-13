@@ -66,11 +66,11 @@ function res = getClassMethods(path,classname)
 end
 
 function writeMethods(fileID,props)
-    fprintf(fileID,'\t methods\n');
+    fprintf(fileID,'    methods\n');
     for i = 1:length(props)
-        fprintf(fileID,['\t\t',props(i).name,';\n']);
+        fprintf(fileID,['        ',props(i).name,';\n']);
     end
-    fprintf(fileID,'\t end\n');
+    fprintf(fileID,'    end\n');
 end
 
 function argfunc = getArgFunc(path, filename)
